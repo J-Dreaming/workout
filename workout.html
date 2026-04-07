@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Workout">
+  <title>LIIFT4 Plan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #07090F;
+      --card: #0E1422;
+      --card2: #131929;
+      --border: #1C2640;
+      --text: #E8EDF5;
+      --muted: #4A5568;
+      --soft: #2D3A52;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; overscroll-behavior: none; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+```
+/* HEADER */
+.header {
+  padding: calc(env(safe-area-inset-top) + 20px) 20px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent-grad);
+  opacity: 0.12;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.07;
+}
+.header-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+  position: relative;
+}
+.header-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  letter-spacing: 2px;
+  line-height: 1;
+  position: relative;
+}
+.header-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 5px;
+  font-weight: 500;
+  position: relative;
+}
+.header-tags {
+  display: flex;
+  gap: 7px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  position: relative;
+}
+.tag {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 20px;
+  padding: 3px 11px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.tag.filled {
+  background: var(--accent);
+  color: #000;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.tab {
+  flex: 1;
+  padding: 12px 4px 10px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.tab-emoji { font-size: 16px; }
+
+/* BODY */
+.body { padding: 14px 14px 30px; }
+
+/* FORMAT CARD */
+.format-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 11px 14px;
+  margin-bottom: 12px;
+}
+.format-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.format-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* WARMUP */
+.warmup-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.warmup-emoji { font-size: 20px; flex-shrink: 0; }
+.warmup-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+.warmup-text { font-size: 12px; color: var(--text); line-height: 1.5; font-weight: 400; }
+
+/* BLOCK CARD */
+.block-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.block-card.open { border-color: var(--accent); }
+.block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--card2);
+  border-bottom: 1px solid var(--border);
+}
+.block-num {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.block-toggle {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.block-body { padding: 12px 14px 0; }
+
+/* LIFT ROW */
+.lift-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.sets-pill {
+  background: var(--accent);
+  color: #000;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+.exercise-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+.form-tip {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.4;
+  font-weight: 400;
+  display: none;
+}
+.form-tip.visible { display: block; }
+.tip-icon { color: var(--accent); }
+
+/* ARROW CONNECTOR */
+.connector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+.connector-line {
+  height: 1px;
+  background: var(--border);
+  flex: 1;
+}
+.connector-text {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+/* HIIT ROW */
+.hiit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.duration-pill {
+  background: transparent;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.blast-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #F59E0B;
+  margin-top: 3px;
+}
+
+/* REST BAR */
+.rest-bar {
+  border-top: 1px solid var(--border);
+  padding: 9px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* FINISHER */
+.finisher-card {
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  background: var(--card);
+  position: relative;
+  overflow: hidden;
+}
+.finisher-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  opacity: 0.04;
+}
+.finisher-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 7px;
+  position: relative;
+}
+.finisher-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.5;
+  position: relative;
+}
+
+/* FORMULA BAR */
+.formula {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.formula-word {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.formula-arrow {
+  color: var(--border);
+  font-size: 12px;
+}
+
+/* TIPS TOGGLE */
+.tips-toggle {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.tips-toggle:hover { border-color: var(--accent); color: var(--text); }
+
+.tips-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 20px;
+  display: none;
+}
+.tips-section.open { display: block; }
+.tip-row {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.tip-row:last-child { padding-bottom: 0; margin-bottom: 0; border-bottom: none; }
+.tip-emoji { font-size: 18px; flex-shrink: 0; }
+.tip-text { font-size: 12px; color: var(--muted); line-height: 1.5; font-weight: 400; }
+
+/* TRANSITION */
+.day-content { animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+```
+
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const DAYS = [
+  {
+    day: "Mon", label: "Chest & Back", icon: "💪",
+    focus: "Chest · Back · Full Body Burn",
+    accent: "#6366F1",
+    style: "Circuit", styleDesc: "3 rounds of 4 blocks. Each strength set flows immediately into a plyo blast, then rest.",
+    warmup: "Arm circles × 20, band pull-aparts × 15, 20 jumping jacks",
+    blocks: [
+      { lift: { name: "Barbell Bench Press", sets: "3 × 10", tip: "Control descent 2 sec down, drive explosively up" },
+        hiit: { name: "Plyo Push-Up Bursts", dur: "30 sec", tip: "Hands leave floor each rep — scale to fast push-ups if needed" }, rest: "45 sec" },
+      { lift: { name: "Bent-Over Barbell Row", sets: "3 × 10", tip: "Chest proud, elbows drive back — not up" },
+        hiit: { name: "Jump Squats", dur: "30 sec", tip: "Land soft with bent knees — protect the joints" }, rest: "45 sec" },
+      { lift: { name: "Incline Dumbbell Press", sets: "3 × 10", tip: "45° bench, squeeze pecs at top — don't lock out" },
+        hiit: { name: "Mountain Climbers", dur: "30 sec", tip: "Drive knees to chest fast — hips stay level" }, rest: "45 sec" },
+      { lift: { name: "Seated Cable Row", sets: "3 × 12", tip: "Full stretch forward, drive elbows back to ribs" },
+        hiit: { name: "Lateral Hop Overs", dur: "30 sec", tip: "Side to side over a dumbbell — stay light on feet" }, rest: "45 sec" },
+    ],
+    finisher: "🏁  Dead bugs × 15  →  Plank 30 sec  →  Repeat × 3"
+  },
+  {
+    day: "Tue", label: "Legs", icon: "🦵",
+    focus: "Quads · Hamstrings · Glutes",
+    accent: "#10B981",
+    style: "50/50", styleDesc: "Heavy lifting, then plyometric blast. Take the full 60 sec — legs need it.",
+    warmup: "Leg swings × 20 each, bodyweight squats × 15, hip circles",
+    blocks: [
+      { lift: { name: "Barbell Back Squat", sets: "4 × 10", tip: "Sit back into heels, knees track toes — go heavy" },
+        hiit: { name: "Jump Squats", dur: "30 sec", tip: "Full squat depth, explode up — arms drive overhead" }, rest: "60 sec" },
+      { lift: { name: "Romanian Deadlift (RDL)", sets: "4 × 10", tip: "Hip hinge — feel hamstring stretch, not your lower back" },
+        hiit: { name: "Jump Lunges", dur: "30 sec", tip: "Switch legs mid-air — land soft every time" }, rest: "60 sec" },
+      { lift: { name: "Bulgarian Split Squat", sets: "3 × 10 ea", tip: "Rear foot elevated, front foot far forward to stay upright" },
+        hiit: { name: "Skater Hops", dur: "30 sec", tip: "One leg landing, reach opposite hand to foot, load the glute" }, rest: "60 sec" },
+      { lift: { name: "Leg Press", sets: "3 × 12", tip: "Higher foot placement = more glutes. Don't lock knees at top." },
+        hiit: { name: "Tuck Jumps", dur: "20 sec", tip: "Drive knees to chest — quality over speed" }, rest: "45 sec" },
+    ],
+    finisher: "🏁  Hanging Knee Raises × 15  →  Ab wheel 30 sec  →  Repeat × 3"
+  },
+  {
+    day: "Thu", label: "Shoulders & Arms", icon: "🏋️",
+    focus: "Delts · Biceps · Triceps",
+    accent: "#EF4444",
+    style: "Intervals", styleDesc: "Lifting move alternates with a 30-sec HIIT burst. Heart rate stays elevated the whole time.",
+    warmup: "Thoracic rotations, band pull-aparts × 15, light lateral raises × 12",
+    blocks: [
+      { lift: { name: "Dumbbell Shoulder Press", sets: "3 × 10", tip: "Don't lock elbows at top — keep tension on the delt" },
+        hiit: { name: "Star Jumps", dur: "30 sec", tip: "Explode arms and legs wide simultaneously — full range" }, rest: "45 sec" },
+      { lift: { name: "Lateral Raise + Arnold Press", sets: "3 × 12/10", tip: "Light on laterals — lead with elbows. Arnold: rotate palms out as you press." },
+        hiit: { name: "High Knees", dur: "30 sec", tip: "Drive knees above hip height — pump arms hard" }, rest: "45 sec" },
+      { lift: { name: "Barbell Bicep Curl", sets: "3 × 10", tip: "Full ROM — all the way down, hard squeeze at top" },
+        hiit: { name: "Burpees", dur: "30 sec", tip: "Chest to floor each rep — scale to no-jump if needed" }, rest: "45 sec" },
+      { lift: { name: "Overhead Tricep Extension", sets: "3 × 12", tip: "EZ bar or rope — elbows stay tight, only forearms move" },
+        hiit: { name: "Skaters (Lateral Bounds)", dur: "30 sec", tip: "Low athletic stance, load the outside leg on each landing" }, rest: "45 sec" },
+    ],
+    finisher: "🏁  Cable crunches × 15  →  Bicycle crunches × 20  →  Repeat × 3"
+  },
+  {
+    day: "Fri", label: "Full Body Plyo", icon: "🔥",
+    focus: "Full Body · Max Burn · End Strong",
+    accent: "#F59E0B",
+    style: "HIIT + Strength", styleDesc: "Heavy compounds up top, then pure plyo circuit to close the week. This one leaves a mark.",
+    warmup: "Hip hinges × 15, glute bridges × 15, lateral band walks × 20",
+    blocks: [
+      { lift: { name: "Deadlift or RDL", sets: "4 × 8", tip: "Go heavy — this is your biggest compound move of the week" },
+        hiit: { name: "Box Jumps", dur: "30 sec", tip: "Land fully on box with soft knees — step down, don't jump down" }, rest: "60 sec" },
+      { lift: { name: "Barbell Hip Thrust", sets: "3 × 12", tip: "Back on bench, drive through heels — hard squeeze at top" },
+        hiit: { name: "Jump Lunges", dur: "30 sec", tip: "Explosive switch — chest tall, land quiet" }, rest: "45 sec" },
+      { lift: { name: "Walking Lunges (DBs)", sets: "3 × 12 ea", tip: "Stay tall — front knee doesn't drift past toes" },
+        hiit: { name: "180° Squat Jumps", dur: "30 sec", tip: "Jump, rotate 180° — absorb landing and go right back" }, rest: "45 sec" },
+      { lift: { name: "Goblet Squat", sets: "3 × 15", tip: "Lighter weight, full depth — this is a burner, not a max lift" },
+        hiit: { name: "Plyo Push-Up Bursts", dur: "30 sec", tip: "Chest to floor, explosive press — clap optional" }, rest: "30 sec" },
+    ],
+    finisher: "🏁  AMRAP 4 min — Burpees × 5 → Tuck Jumps × 8 → Mountain Climbers × 20 → Rest 20 sec"
+  }
+];
+
+const TIPS = [
+  { e: "⚖️", t: "Eat near maintenance on workout days, ~200–300 cal deficit on rest days. This drives recomp without stalling muscle growth." },
+  { e: "🥩", t: "Target 180–200g of protein daily. At 220 lbs, protein is your most important variable." },
+  { e: "⚡", t: "The plyo blasts are where the fat burn happens. Don't sandbag them — that's the whole LIIFT formula working." },
+  { e: "📈", t: "Track your lifts. Hit the top of the rep range clean two sessions in a row? Add weight." },
+  { e: "😴", t: "7–8 hrs of sleep. Muscle is built during recovery, not during the workout." },
+  { e: "🚶", t: "7,000–10,000 steps on rest days. Low effort, high fat-burn payoff over weeks." },
+];
+
+let activeDay = 0;
+let openBlocks = {};
+let tipsOpen = false;
+
+function setAccent(color) {
+  document.documentElement.style.setProperty('--accent', color);
+  document.documentElement.style.setProperty('--accent-grad', `linear-gradient(135deg, ${color}, ${color}88)`);
+}
+
+function render() {
+  const d = DAYS[activeDay];
+  setAccent(d.accent);
+
+  document.getElementById('app').innerHTML = `
+    <div class="header">
+      <div class="header-eyebrow">LIIFT4-Style · Mon / Tue / Thu / Fri</div>
+      <div class="header-title">${d.icon} ${d.label}</div>
+      <div class="header-sub">${d.focus}</div>
+      <div class="header-tags">
+        <span class="tag filled">${d.style}</span>
+        <span class="tag">30–45 min</span>
+        <span class="tag">Lift → HIIT → Rest</span>
+      </div>
+    </div>
+
+    <div class="tabs">
+      ${DAYS.map((day, i) => `
+        <button class="tab ${i === activeDay ? 'active' : ''}" onclick="switchDay(${i})">
+          <span class="tab-emoji">${day.icon}</span>
+          ${day.day}
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="body day-content">
+
+      <div class="format-card">
+        <div class="format-label">${d.style} Format</div>
+        <div class="format-desc">${d.styleDesc}</div>
+      </div>
+
+      <div class="warmup-card">
+        <span class="warmup-emoji">🔥</span>
+        <div>
+          <div class="warmup-label">Warm-Up · 3 min</div>
+          <div class="warmup-text">${d.warmup}</div>
+        </div>
+      </div>
+
+      ${d.blocks.map((b, i) => `
+        <div class="block-card ${openBlocks[activeDay + '-' + i] ? 'open' : ''}" onclick="toggleBlock(${i})">
+          <div class="block-header">
+            <span class="block-num">Block ${i + 1}</span>
+            <span class="block-toggle">${openBlocks[activeDay + '-' + i] ? '▲ hide tips' : '▼ form tips'}</span>
+          </div>
+          <div class="block-body">
+            <div class="lift-row">
+              <div class="sets-pill">${b.lift.sets}</div>
+              <div>
+                <div class="exercise-name">${b.lift.name}</div>
+                <div class="form-tip ${openBlocks[activeDay + '-' + i] ? 'visible' : ''}">
+                  <span class="tip-icon">📌</span> ${b.lift.tip}
+                </div>
+              </div>
+            </div>
+            <div class="connector">
+              <div class="connector-line"></div>
+              <div class="connector-text">↓ immediately into</div>
+              <div class="connector-line"></div>
+            </div>
+            <div class="hiit-row">
+              <div class="duration-pill">${b.hiit.dur}</div>
+              <div>
+                <div class="exercise-name">${b.hiit.name}</div>
+                <div class="blast-label">⚡ PLYO BLAST</div>
+                <div class="form-tip ${openBlocks[activeDay + '-' + i] ? 'visible' : ''}">
+                  <span class="tip-icon">📌</span> ${b.hiit.tip}
+                </div>
+              </div>
+            </div>
+            <div class="rest-bar">⏱ REST ${b.rest} — then repeat block</div>
+          </div>
+        </div>
+      `).join('')}
+
+      <div class="finisher-card">
+        <div class="finisher-label">Core Finisher</div>
+        <div class="finisher-text">${d.finisher}</div>
+      </div>
+
+      <div class="formula">
+        <span class="formula-word" style="color: var(--accent)">Lift</span>
+        <span class="formula-arrow">→</span>
+        <span class="formula-word" style="color: var(--accent)">HIIT</span>
+        <span class="formula-arrow">→</span>
+        <span class="formula-word" style="color: var(--accent)">Rest</span>
+        <span class="formula-arrow">→</span>
+        <span class="formula-word" style="color: var(--accent)">Repeat</span>
+      </div>
+
+      <button class="tips-toggle" onclick="toggleTips()">
+        <span>Nutrition & Recomp Tips</span>
+        <span>${tipsOpen ? '▲' : '▼'}</span>
+      </button>
+      <div class="tips-section ${tipsOpen ? 'open' : ''}">
+        ${TIPS.map(t => `
+          <div class="tip-row">
+            <span class="tip-emoji">${t.e}</span>
+            <span class="tip-text">${t.t}</span>
+          </div>
+        `).join('')}
+      </div>
+
+    </div>
+  `;
+}
+
+function switchDay(i) {
+  activeDay = i;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleBlock(i) {
+  const key = activeDay + '-' + i;
+  openBlocks[key] = !openBlocks[key];
+  render();
+}
+
+function toggleTips() {
+  tipsOpen = !tipsOpen;
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
