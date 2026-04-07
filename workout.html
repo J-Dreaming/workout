@@ -161,12 +161,12 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: #07090F; color:
 </div>
 
 <script>
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 // DATA
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 
 var PLAN = [
-  { id:0, num:1, icon:"💪", label:"Chest and Back", focus:"Chest · Back · Full Body Burn", color:"#6366F1",
+  { id:0, num:1, icon:"\uD83D\uDCAA", label:"Chest and Back", focus:"Chest \u00B7 Back \u00B7 Full Body Burn", color:"#6366F1",
     style:"Circuit", sdesc:"3 rounds per block. Each lift flows immediately into a plyo blast, then rest.",
     warmup:"Arm circles x20, band pull-aparts x15, 20 jumping jacks",
     isCardio: false,
@@ -186,8 +186,8 @@ var PLAN = [
     ],
     fins:["Dead bugs x15 - Plank 30 sec - Repeat x3","Ab wheel x15 - Side plank 20 sec each - Repeat x3","Hollow body hold 30 sec - V-ups x15 - Repeat x3","Cable crunch x20 - Plank to downdog x10 - Repeat x3","Hanging knee raise x15 - Bear crawl 20 sec - Repeat x3"] },
 
-  { id:1, num:2, icon:"🦵", label:"Legs", focus:"Quads · Hamstrings · Glutes", color:"#10B981",
-    style:"50/50", sdesc:"Heavy lifting first, then plyometric blast. Take full 60 sec rest — legs need it.",
+  { id:1, num:2, icon:"\uD83E\uDDB5", label:"Legs", focus:"Quads \u00B7 Hamstrings \u00B7 Glutes", color:"#10B981",
+    style:"50/50", sdesc:"Heavy lifting first, then plyometric blast. Take full 60 sec rest \u2014 legs need it.",
     warmup:"Leg swings x20 each, bodyweight squats x15, hip circles",
     isCardio: false,
     blocks:[
@@ -206,7 +206,7 @@ var PLAN = [
     ],
     fins:["Hanging Knee Raises x15 - Ab wheel 30 sec - Repeat x3","Leg raises x15 - Plank 30 sec - Repeat x3","Dragon flags x8 - Hollow hold 30 sec - Repeat x3","GHD sit-ups x15 - Back extensions x15 - Repeat x3","Cable crunch x20 - Side bend x15 each - Repeat x3"] },
 
-  { id:2, num:3, icon:"🏋️", label:"Shoulders and Arms", focus:"Delts · Biceps · Triceps", color:"#EF4444",
+  { id:2, num:3, icon:"\uD83C\uDFCB\uFE0F", label:"Shoulders and Arms", focus:"Delts \u00B7 Biceps \u00B7 Triceps", color:"#EF4444",
     style:"Intervals", sdesc:"Lifting alternates with a 30 sec plyo burst. Heart rate stays elevated throughout.",
     warmup:"Thoracic rotations, band pull-aparts x15, light lateral raises x12",
     isCardio: false,
@@ -226,7 +226,7 @@ var PLAN = [
     ],
     fins:["Cable crunches x15 - Bicycle crunches x20 - Repeat x3","Ab wheel x12 - Russian twist x20 - Repeat x3","Hollow body hold 30 sec - Toe touches x20 - Repeat x3","Hanging knee raise x15 - Oblique crunch x15 each - Repeat x3","Plank 45 sec - Side plank 20 sec each - Repeat x3"] },
 
-  { id:3, num:4, icon:"🔥", label:"Full Body Plyo", focus:"Full Body · Max Burn · End Strong", color:"#F59E0B",
+  { id:3, num:4, icon:"\uD83D\uDD25", label:"Full Body Plyo", focus:"Full Body \u00B7 Max Burn \u00B7 End Strong", color:"#F59E0B",
     style:"HIIT and Strength", sdesc:"Heavy compounds first, then pure plyo circuit to close the week.",
     warmup:"Hip hinges x15, glute bridges x15, lateral band walks x20",
     isCardio: false,
@@ -246,30 +246,30 @@ var PLAN = [
     ],
     fins:["AMRAP 4 min: Burpees x5 - Tuck Jumps x8 - Mountain Climbers x20 - Rest 20 sec","4 min EMOM: Odd = 10 Box Jumps, Even = 15 KB Swings","Tabata: 20 sec Jump Squats / 10 sec rest x8 rounds","4 rounds: Sprint 20 sec - Plank 20 sec - Rest 20 sec","Death by burpees: 1 min 1, 2 min 2, continue until failure"] },
 
-  { id:4, num:5, icon:"🏃", label:"Cardio", focus:"Endurance · Fat Burn · Active Recovery", color:"#06B6D4",
+  { id:4, num:5, icon:"\uD83C\uDFC3", label:"Cardio", focus:"Endurance \u00B7 Fat Burn \u00B7 Active Recovery", color:"#06B6D4",
     style:"Cardio", sdesc:"Log whatever cardio feels right today. Pick an activity, set your time or distance, and go.",
     warmup:"3-5 min easy walk or light jog to warm up before picking up pace",
     isCardio: true,
     activities:[
-      { icon:"🏃", name:"Outdoor Run", desc:"Easy, tempo, or intervals — your call. Aim for 20-45 min.", unit1:"miles", unit2:"min" },
-      { icon:"🏃", name:"Treadmill Run", desc:"Set incline to 1% to simulate outdoor resistance.", unit1:"miles", unit2:"min" },
-      { icon:"🚴", name:"Outdoor Bike", desc:"Great low-impact option. Push hard on hills.", unit1:"miles", unit2:"min" },
-      { icon:"🚴", name:"Stationary Bike", desc:"Easy on joints, high calorie burn. Try intervals.", unit1:"miles", unit2:"min" },
-      { icon:"🚣", name:"Rowing Machine", desc:"Best full-body cardio in the gym. 500m splits.", unit1:"meters", unit2:"min" },
-      { icon:"🏊", name:"Swimming", desc:"Zero-impact, maximum recovery. Any stroke.", unit1:"laps", unit2:"min" },
-      { icon:"⛹️", name:"Jump Rope", desc:"10 min = 1 mile run equivalent. Build up slowly.", unit1:"min", unit2:"rounds" },
-      { icon:"🥊", name:"Cardio HIIT Circuit", desc:"Burpees, jump squats, mountain climbers — 30 on / 15 off.", unit1:"rounds", unit2:"min" }
+      { icon:"\uD83C\uDFC3", name:"Outdoor Run", desc:"Easy, tempo, or intervals \u2014 your call. Aim for 20-45 min.", unit1:"miles", unit2:"min" },
+      { icon:"\uD83C\uDFC3", name:"Treadmill Run", desc:"Set incline to 1% to simulate outdoor resistance.", unit1:"miles", unit2:"min" },
+      { icon:"\uD83D\uDEB4", name:"Outdoor Bike", desc:"Great low-impact option. Push hard on hills.", unit1:"miles", unit2:"min" },
+      { icon:"\uD83D\uDEB4", name:"Stationary Bike", desc:"Easy on joints, high calorie burn. Try intervals.", unit1:"miles", unit2:"min" },
+      { icon:"\uD83D\uDEA3", name:"Rowing Machine", desc:"Best full-body cardio in the gym. 500m splits.", unit1:"meters", unit2:"min" },
+      { icon:"\uD83C\uDFCA", name:"Swimming", desc:"Zero-impact, maximum recovery. Any stroke.", unit1:"laps", unit2:"min" },
+      { icon:"\u26F9\uFE0F", name:"Jump Rope", desc:"10 min = 1 mile run equivalent. Build up slowly.", unit1:"min", unit2:"rounds" },
+      { icon:"\uD83E\uDD4A", name:"Cardio HIIT Circuit", desc:"Burpees, jump squats, mountain climbers \u2014 30 on / 15 off.", unit1:"rounds", unit2:"min" }
     ],
     fins:["5 min easy walk cooldown + full body stretch","10 min yoga flow or static stretching","Foam roll quads, hamstrings, calves, IT band","Contrast shower: 2 min hot, 30 sec cold, repeat x3","Legs up the wall 5 min for active recovery"] }
 ];
 
 var TIPS = [
-  {e:"⚖️", t:"Eat near maintenance on workout days, 200-300 cal deficit on rest days."},
-  {e:"🥩", t:"Target 180-200g of protein daily. At 220 lbs, protein is your most important variable."},
-  {e:"⚡", t:"The plyo blasts are where the fat burn happens — do not sandbag them."},
-  {e:"📈", t:"Hit the top of the rep range clean two sessions in a row? Add weight."},
-  {e:"😴", t:"7-8 hrs of sleep. Muscle is built during recovery, not during the workout."},
-  {e:"🚶", t:"7,000-10,000 steps on rest days. Low effort, big fat-burn payoff."}
+  {e:"\u2696\uFE0F", t:"Eat near maintenance on workout days, 200-300 cal deficit on rest days."},
+  {e:"\uD83E\uDD69", t:"Target 180-200g of protein daily. At 220 lbs, protein is your most important variable."},
+  {e:"\u26A1", t:"The plyo blasts are where the fat burn happens \u2014 do not sandbag them."},
+  {e:"\uD83D\uDCC8", t:"Hit the top of the rep range clean two sessions in a row? Add weight."},
+  {e:"\uD83D\uDE34", t:"7-8 hrs of sleep. Muscle is built during recovery, not during the workout."},
+  {e:"\uD83D\uDEB6", t:"7,000-10,000 steps on rest days. Low effort, big fat-burn payoff."}
 ];
 
 // Scheduled workout days to plan index
@@ -277,9 +277,9 @@ var DOW_TO_PLAN = {1:0, 2:1, 4:2, 5:3};
 var WD = [1,2,4,5];
 var DN = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 // STATE
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 var mainTab       = "plan";
 var planIdx       = 0;
 var trackTab      = "today";
@@ -299,9 +299,9 @@ try { db = JSON.parse(localStorage.getItem("wod5") || "null") || {w:{}, b:[]}; }
 catch(e) { db = {w:{}, b:[]}; }
 function save() { try { localStorage.setItem("wod5", JSON.stringify(db)); } catch(e) {} }
 
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 // HELPERS
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 function todayStr() {
   var d = new Date();
   var m = ("0" + (d.getMonth()+1)).slice(-2);
@@ -413,9 +413,9 @@ function getActivePlanIdx() {
   return (idx !== undefined) ? idx : -1;
 }
 
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 // ACTIONS
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 function setMain(t) {
   mainTab = t;
   document.getElementById("nb-plan").className = "nav-btn" + (t === "plan" ? " on" : "");
@@ -518,9 +518,9 @@ function doSaveBody() {
   db.b.unshift(entry); save(); draw();
 }
 
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 // DRAW
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 function draw() {
   try {
     drawHeader();
@@ -540,22 +540,22 @@ function drawHeader() {
     el.innerHTML = '<div class="hdr-inner">'
       + '<div><div class="hdr-title" style="color:' + p.color + '">' + p.icon + ' ' + p.label + '</div>'
       + '<div class="hdr-sub">' + p.focus + '</div></div>'
-      + '<div style="text-align:right"><div class="streak-num">' + s + ' 🔥</div><div class="streak-lbl">Streak</div></div>'
+      + '<div style="text-align:right"><div class="streak-num">' + s + ' \uD83D\uDD25</div><div class="streak-lbl">Streak</div></div>'
       + '</div>';
   } else {
     var dots = weekDots().map(function(d) { return '<div class="wdot ' + d.c + '">' + d.l + '</div>'; }).join('');
     var ds = new Date().toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
     el.innerHTML = '<div class="hdr-inner">'
-      + '<div><div class="hdr-title" style="color:#06B6D4">📊 Tracker</div>'
+      + '<div><div class="hdr-title" style="color:#06B6D4">\uD83D\uDCCA Tracker</div>'
       + '<div class="hdr-sub">' + ds + '</div></div>'
-      + '<div style="text-align:right"><div class="streak-num">' + s + ' 🔥</div><div class="streak-lbl">Streak</div></div>'
+      + '<div style="text-align:right"><div class="streak-num">' + s + ' \uD83D\uDD25</div><div class="streak-lbl">Streak</div></div>'
       + '</div><div class="wdots">' + dots + '</div>';
   }
 }
 
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 // PLAN
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 function drawPlan() {
   var p = PLAN[planIdx];
   var tabHtml = PLAN.map(function(x, i) {
@@ -571,16 +571,16 @@ function drawPlan() {
     + '<div style="font-size:12px;color:#4A5568;line-height:1.5">' + p.sdesc + '</div></div>';
   // Warmup
   html += '<div style="background:#0E1422;border:1px solid #1C2640;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;gap:10px">'
-    + '<span style="font-size:20px">🔥</span><div>'
+    + '<span style="font-size:20px">\uD83D\uDD25</span><div>'
     + '<div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#4A5568;margin-bottom:3px">Warm-Up</div>'
     + '<div style="font-size:12px;line-height:1.5">' + p.warmup + '</div>'
     + '</div></div>';
 
   if (p.isCardio) {
-    // Cardio workout — show activity cards
+    // Cardio workout \u2014 show activity cards
     html += renderCardioActivities(p);
   } else {
-    // Strength workout — show blocks
+    // Strength workout \u2014 show blocks
     html += renderBlocks(p);
   }
 
@@ -590,7 +590,7 @@ function drawPlan() {
     return '<option value="' + fi + '"' + (fi === finIdx ? ' selected' : '') + '>' + f + '</option>';
   }).join('');
   html += '<div style="border:1px solid ' + p.color + ';border-radius:12px;padding:14px;margin-bottom:12px;background:#0E1422">'
-    + '<div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:' + p.color + ';margin-bottom:8px">🏁 ' + (p.isCardio ? 'Cooldown' : 'Core Finisher') + '</div>'
+    + '<div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:' + p.color + ';margin-bottom:8px">\uD83C\uDFC1 ' + (p.isCardio ? 'Cooldown' : 'Core Finisher') + '</div>'
     + '<div style="font-size:13px;font-weight:500;line-height:1.5;margin-bottom:10px">' + p.fins[finIdx] + '</div>'
     + '<div class="swap-lbl" style="margin-top:0">Swap ' + (p.isCardio ? 'cooldown' : 'finisher') + '</div>'
     + '<select class="ex-select" style="color:' + p.color + ';border-color:' + p.color + '40" onchange="swapFin(this.value)">' + finOpts + '</select>'
@@ -599,14 +599,14 @@ function drawPlan() {
   if (!p.isCardio) {
     // Formula bar
     html += '<div style="background:#131929;border:1px solid #1C2640;border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;justify-content:space-around;align-items:center">';
-    ["LIFT","→","HIIT","→","REST","→","REPEAT"].forEach(function(w, i) {
+    ["LIFT","\u2192","HIIT","\u2192","REST","\u2192","REPEAT"].forEach(function(w, i) {
       html += '<span style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:' + (i%2===0 ? p.color : '#1C2640') + '">' + w + '</span>';
     });
     html += '</div>';
   }
 
   // Tips
-  html += '<button class="tips-btn" onclick="toggleTips()"><span>Nutrition and Recomp Tips</span><span>' + (tipsOpen ? '▲' : '▼') + '</span></button>';
+  html += '<button class="tips-btn" onclick="toggleTips()"><span>Nutrition and Recomp Tips</span><span>' + (tipsOpen ? '\u25B2' : '\u25BC') + '</span></button>';
   if (tipsOpen) {
     html += '<div class="tips-body show">';
     TIPS.forEach(function(t, i) {
@@ -637,7 +637,7 @@ function renderBlocks(p) {
     html += '<div style="background:#0E1422;border:1px solid ' + (open ? p.color : '#1C2640') + ';border-radius:12px;margin-bottom:10px;overflow:hidden">'
       + '<div style="padding:8px 14px;background:#131929;border-bottom:1px solid #1C2640;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleBlock(' + bi + ')">'
         + '<span style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:' + p.color + '">Block ' + (bi+1) + '</span>'
-        + '<span style="font-size:10px;color:#4A5568">' + (open ? '▲ hide tips' : '▼ form tips') + '</span>'
+        + '<span style="font-size:10px;color:#4A5568">' + (open ? '\u25B2 hide tips' : '\u25BC form tips') + '</span>'
       + '</div>'
       + '<div style="padding:12px 14px 0">'
         // Lift
@@ -645,7 +645,7 @@ function renderBlocks(p) {
           + '<div style="background:' + p.color + ';color:#000;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:800;white-space:nowrap;flex-shrink:0;margin-top:2px">' + b.sets + '</div>'
           + '<div style="flex:1">'
             + '<div style="font-size:14px;font-weight:700">' + b.lifts[li] + '</div>'
-            + (open ? '<div style="font-size:11px;color:#4A5568;margin-top:3px;line-height:1.4">📌 ' + b.liftTip + '</div>' : '')
+            + (open ? '<div style="font-size:11px;color:#4A5568;margin-top:3px;line-height:1.4">\uD83D\uDCCC ' + b.liftTip + '</div>' : '')
             + '<div class="swap-lbl">Swap exercise</div>'
             + '<select class="ex-select" onchange="swapLift(' + bi + ',this.value)">' + lOpts + '</select>'
           + '</div>'
@@ -653,7 +653,7 @@ function renderBlocks(p) {
         // Connector
         + '<div style="display:flex;align-items:center;gap:8px;padding:5px 0">'
           + '<div style="height:1px;background:#1C2640;flex:1"></div>'
-          + '<div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:' + p.color + ';opacity:.8">↓ immediately into</div>'
+          + '<div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:' + p.color + ';opacity:.8">\u2193 immediately into</div>'
           + '<div style="height:1px;background:#1C2640;flex:1"></div>'
         + '</div>'
         // Hiit
@@ -661,13 +661,13 @@ function renderBlocks(p) {
           + '<div style="border:2px solid ' + p.color + ';color:' + p.color + ';border-radius:7px;padding:5px 10px;font-size:11px;font-weight:800;white-space:nowrap;flex-shrink:0;margin-top:2px">30 sec</div>'
           + '<div style="flex:1">'
             + '<div style="font-size:14px;font-weight:700">' + b.hiits[hi] + '</div>'
-            + '<div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#F59E0B;margin-top:3px">⚡ PLYO BLAST</div>'
-            + (open ? '<div style="font-size:11px;color:#4A5568;margin-top:3px;line-height:1.4">📌 ' + b.hiitTip + '</div>' : '')
+            + '<div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#F59E0B;margin-top:3px">\u26A1 PLYO BLAST</div>'
+            + (open ? '<div style="font-size:11px;color:#4A5568;margin-top:3px;line-height:1.4">\uD83D\uDCCC ' + b.hiitTip + '</div>' : '')
             + '<div class="swap-lbl">Swap plyo</div>'
             + '<select class="ex-select" onchange="swapHiit(' + bi + ',this.value)">' + hOpts + '</select>'
           + '</div>'
         + '</div>'
-        + '<div style="border-top:1px solid #1C2640;padding:8px 0;font-size:11px;font-weight:600;color:#4A5568">⏱ REST ' + b.rest + ' then repeat</div>'
+        + '<div style="border-top:1px solid #1C2640;padding:8px 0;font-size:11px;font-weight:600;color:#4A5568">\u23F1 REST ' + b.rest + ' then repeat</div>'
       + '</div>'
     + '</div>';
   });
@@ -691,16 +691,16 @@ function renderCardioActivities(p) {
   html += '<div style="background:#0E1422;border:1px solid #1C2640;border-radius:12px;padding:14px;margin-bottom:12px">'
     + '<div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#4A5568;margin-bottom:10px">Cardio Notes for Keto</div>'
     + '<div style="font-size:12px;color:#4A5568;line-height:1.6">'
-    + 'Once fat-adapted, fasted cardio works great. For sessions over 45 min, consider MCT oil or BCAAs beforehand. Keep intensity at a pace where you can hold a conversation — this is fat-burning zone. HIIT cardio burns more overall but requires more recovery. Match intensity to how your workouts have been this week.'
+    + 'Once fat-adapted, fasted cardio works great. For sessions over 45 min, consider MCT oil or BCAAs beforehand. Keep intensity at a pace where you can hold a conversation \u2014 this is fat-burning zone. HIIT cardio burns more overall but requires more recovery. Match intensity to how your workouts have been this week.'
     + '</div></div>';
   return html;
 }
 
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 // TRACK
-// ════════════════════════════════════════════════════
+// --------------------------------------------
 function drawTrack() {
-  var tabHtml = [["today","🏋️ Today"],["history","📊 History"],["body","⚖️ Body"]].map(function(t) {
+  var tabHtml = [["today","\uD83C\uDFCB\uFE0F Today"],["history","\uD83D\uDCCA History"],["body","\u2696\uFE0F Body"]].map(function(t) {
     return '<button class="stab' + (trackTab === t[0] ? ' on' : '') + '" onclick="setTrackTab(\'' + t[0] + '\')">' + t[1] + '</button>';
   }).join('');
   document.getElementById("subtabs").innerHTML = '<div class="stab-bar">' + tabHtml + '</div>';
@@ -742,18 +742,18 @@ function buildToday() {
     if (ap.isCardio && en.cardio) {
       var act = ap.activities[en.cardio.activity] || ap.activities[0];
       cardioHtml = '<div style="font-size:12px;color:#000;opacity:.7">' + act.icon + ' ' + act.name
-        + (en.cardio.val1 ? ' · ' + en.cardio.val1 + ' ' + act.unit1 : '')
-        + (en.cardio.val2 ? ' · ' + en.cardio.val2 + ' ' + act.unit2 : '')
+        + (en.cardio.val1 ? ' \u00B7 ' + en.cardio.val1 + ' ' + act.unit1 : '')
+        + (en.cardio.val2 ? ' \u00B7 ' + en.cardio.val2 + ' ' + act.unit2 : '')
         + '</div>';
     }
     return pickerHtml
-      + '<div class="done-banner"><span style="font-size:28px">✅</span><div>'
+      + '<div class="done-banner"><span style="font-size:28px">\u2705</span><div>'
         + '<div style="font-size:14px;font-weight:700;color:#000">Workout Complete!</div>'
-        + '<div style="font-size:12px;color:#000;opacity:.7">' + ap.label + (en.rpe ? ' · RPE ' + en.rpe + '/10' : '') + ' · ' + fmtDate(k) + volHtml + '</div>'
+        + '<div style="font-size:12px;color:#000;opacity:.7">' + ap.label + (en.rpe ? ' \u00B7 RPE ' + en.rpe + '/10' : '') + ' \u00B7 ' + fmtDate(k) + volHtml + '</div>'
         + cardioHtml
       + '</div></div>'
       + (ap.isCardio ? '' : buildExCards(ap, apIdx, k, true))
-      + (en.notes ? '<div style="background:#131929;border:1px solid #1C2640;border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;color:#4A5568;line-height:1.5">📝 ' + en.notes + '</div>' : '')
+      + (en.notes ? '<div style="background:#131929;border:1px solid #1C2640;border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;color:#4A5568;line-height:1.5">\uD83D\uDCDD ' + en.notes + '</div>' : '')
       + '<div style="margin-top:12px"><button class="btn btn-outline btn-full" onclick="doUncomplete()">Undo Complete</button></div>';
   }
 
@@ -794,12 +794,12 @@ cardioLogHtml = ‘<div class="card"><div class="card-body">’
 
 return pickerHtml
 + ‘<div style="background:#0E1422;border:1px solid ' + ap.color + '40;border-left:3px solid ' + ap.color + ';border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:14px">’
-+ ’<div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:' + ap.color + ';margin-bottom:2px">Logging · Workout ’ + ap.num + ‘</div>’
++ ’<div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:' + ap.color + ';margin-bottom:2px">Logging \u00B7 Workout ’ + ap.num + ‘</div>’
 + ‘<div style="font-size:18px;font-weight:800">’ + ap.label + ‘</div>’
 + ‘</div>’
 + (ap.isCardio ? cardioLogHtml : buildExCards(ap, apIdx, k, false))
 + notesHtml
-+ ‘<div style="margin-top:14px"><button class="btn btn-green btn-full" onclick="doComplete()">✓ Mark Workout Complete</button></div>’;
++ ‘<div style="margin-top:14px"><button class="btn btn-green btn-full" onclick="doComplete()">\u2713 Mark Workout Complete</button></div>’;
 }
 
 function buildExCards(ap, apIdx, dk, ro) {
@@ -825,7 +825,7 @@ setsHtml += ‘<div class="set-row">’
 + ‘<input class=“set-inp” type=“number” inputmode=“numeric” placeholder=”’ + ((last && last[si]) ? (last[si].reps || 0) : 0) + ‘” value=”’ + (s.reps || ‘’) + ‘” style=“width:42px”’ + (ro ? ’ readonly’ : ‘’) + ’ onchange=“doSetR(’ + xi + ‘,’ + si + ‘,this.value)”>’
 + ‘<span class="set-unit">reps</span>’
 + ‘</div>’
-+ (ro ? ‘’ : ‘<button class="set-del" onclick="doRemSet(' + xi + ',' + si + ')">✕</button>’)
++ (ro ? ‘’ : ‘<button class="set-del" onclick="doRemSet(' + xi + ',' + si + ')">\u2715</button>’)
 + ‘</div>’;
 if (orm > 0) setsHtml += ‘<div class="one-rm">Est. 1RM: ~’ + orm + ’ lbs</div>’;
 });
@@ -833,7 +833,7 @@ var addBtn = ro ? ‘’ : ‘<button class="btn btn-outline btn-sm" style="marg
 html += ‘<div class="card">’
 + ‘<div class="card-hdr" onclick="toggleCard(' + xi + ')">’
 + ‘<div><div class="card-title">’ + ex + prTag + ‘</div><div class="card-sub">’ + sets.length + ’ set’ + (sets.length !== 1 ? ‘s’ : ‘’) + ’ logged</div></div>’
-+ ‘<span style="font-size:12px;color:#4A5568">’ + (open ? ‘▲’ : ‘▼’) + ‘</span>’
++ ‘<span style="font-size:12px;color:#4A5568">’ + (open ? ‘\u25B2’ : ‘\u25BC’) + ‘</span>’
 + ‘</div>’
 + (open ? ‘<div class="card-body">’ + lastTxt + setsHtml + addBtn + ‘</div>’ : ‘’)
 + ‘</div>’;
@@ -843,7 +843,7 @@ return html;
 
 function buildHistory() {
 var keys = Object.keys(db.w).sort().reverse();
-if (!keys.length) return ‘<div class="empty"><div style="font-size:38px;margin-bottom:10px">📋</div><div style="font-size:13px;line-height:1.5">No workouts logged yet.</div></div>’;
+if (!keys.length) return ‘<div class="empty"><div style="font-size:38px;margin-bottom:10px">\uD83D\uDCCB</div><div style="font-size:13px;line-height:1.5">No workouts logged yet.</div></div>’;
 
 var allExMap = {};
 PLAN.forEach(function(p, pi) {
@@ -877,8 +877,8 @@ if (open) {
     var act = p.activities[e.cardio.activity] || p.activities[0];
     exHtml = '<div style="font-size:13px;margin:10px 0 5px">'
       + act.icon + ' ' + act.name
-      + (e.cardio.val1 ? ' · ' + e.cardio.val1 + ' ' + act.unit1 : '')
-      + (e.cardio.val2 ? ' · ' + e.cardio.val2 + ' ' + act.unit2 : '')
+      + (e.cardio.val1 ? ' \u00B7 ' + e.cardio.val1 + ' ' + act.unit1 : '')
+      + (e.cardio.val2 ? ' \u00B7 ' + e.cardio.val2 + ' ' + act.unit2 : '')
       + '</div>';
   } else if (exKeys.length) {
     exHtml = exKeys.map(function(ex) {
@@ -887,24 +887,24 @@ if (open) {
         + '<div class="pill-wrap">' + e.ex[ex].map(function(s) {
           var iP = s.weight && s.weight >= pr && pr > 0;
           var orm = calcORM(s.weight, s.reps);
-          return '<span class="pill' + (iP ? ' pr' : '') + '">' + (s.weight||'?') + 'lbs x ' + (s.reps||'?') + (iP ? ' 🏆' : '') + (orm > 0 ? ' · ~' + orm : '') + '</span>';
+          return '<span class="pill' + (iP ? ' pr' : '') + '">' + (s.weight||'?') + 'lbs x ' + (s.reps||'?') + (iP ? ' \uD83C\uDFC6' : '') + (orm > 0 ? ' \u00B7 ~' + orm : '') + '</span>';
         }).join('') + '</div>';
     }).join('');
   } else {
     exHtml = '<div style="color:#4A5568;font-size:12px;padding:4px 0">No exercises logged</div>';
   }
-  if (e.notes) exHtml += '<div style="margin-top:10px;font-size:12px;color:#4A5568;font-style:italic;line-height:1.5">📝 ' + e.notes + '</div>';
+  if (e.notes) exHtml += '<div style="margin-top:10px;font-size:12px;color:#4A5568;font-style:italic;line-height:1.5">\uD83D\uDCDD ' + e.notes + '</div>';
 }
 
 return '<div style="background:#0E1422;border:1px solid #1C2640;border-radius:12px;margin-bottom:10px;overflow:hidden">'
   + '<div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleHist(\'' + k + '\')">'
     + '<div><div style="font-family:Bebas Neue,serif;font-size:20px;letter-spacing:1px;color:' + p.color + '">' + p.icon + ' ' + p.label + '</div>'
     + '<div style="font-size:11px;color:#4A5568;margin-top:1px">'
-      + fmtDate(k) + (e.rpe ? ' · RPE ' + e.rpe + '/10' : '') + (vol > 0 ? '<span class="vol-tag">' + vol.toLocaleString() + ' lbs</span>' : '')
+      + fmtDate(k) + (e.rpe ? ' \u00B7 RPE ' + e.rpe + '/10' : '') + (vol > 0 ? '<span class="vol-tag">' + vol.toLocaleString() + ' lbs</span>' : '')
     + '</div></div>'
     + '<div style="display:flex;align-items:center;gap:8px">'
       + (e.done ? '<span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:#10B981;color:#000">Done</span>' : '')
-      + '<span style="font-size:12px;color:#4A5568">' + (open ? '▲' : '▼') + '</span>'
+      + '<span style="font-size:12px;color:#4A5568">' + (open ? '\u25B2' : '\u25BC') + '</span>'
     + '</div>'
   + '</div>'
   + (open ? '<div style="padding:0 14px 12px">' + exHtml + '</div>' : '')
@@ -954,9 +954,9 @@ return ‘<div class="sec-lbl">Log Today</div><div class="card"><div class="card
 + ‘</div></div>’ + prog + ‘<div class="sec-lbl">History</div>’ + hist;
 }
 
-// ════════════════════════════════════════════════════
+// ––––––––––––––––––––––
 // TIMER
-// ════════════════════════════════════════════════════
+// ––––––––––––––––––––––
 var TD = 30, tSec = 30, tRun = false, tInt = null, tVis = false, tPI = 0;
 
 function tShow() {
