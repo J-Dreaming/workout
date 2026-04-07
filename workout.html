@@ -7,635 +7,745 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Workout">
-  <title>LIIFT4 Plan</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Workout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #07090F;
-      --card: #0E1422;
-      --card2: #131929;
-      --border: #1C2640;
-      --text: #E8EDF5;
-      --muted: #4A5568;
-      --soft: #2D3A52;
+      --bg:#07090F; --card:#0E1422; --card2:#131929; --border:#1C2640;
+      --text:#E8EDF5; --muted:#4A5568; --soft:#2D3A52;
+      --accent:#06B6D4; --green:#10B981; --amber:#F59E0B; --red:#EF4444;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; overscroll-behavior: none; }
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    html,body{height:100%;overscroll-behavior:none;}
+    body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
+    #app{display:flex;flex-direction:column;height:100vh;}
 
 ```
-/* HEADER */
-.header {
-  padding: calc(env(safe-area-inset-top) + 20px) 20px 20px;
-  position: relative;
-  overflow: hidden;
-}
-.header::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent-grad);
-  opacity: 0.12;
-}
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: -40px; right: -40px;
-  width: 180px; height: 180px;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0.07;
-}
-.header-eyebrow {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 4px;
-  position: relative;
-}
-.header-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 36px;
-  letter-spacing: 2px;
-  line-height: 1;
-  position: relative;
-}
-.header-sub {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 5px;
-  font-weight: 500;
-  position: relative;
-}
-.header-tags {
-  display: flex;
-  gap: 7px;
-  margin-top: 14px;
-  flex-wrap: wrap;
-  position: relative;
-}
-.tag {
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  border-radius: 20px;
-  padding: 3px 11px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-.tag.filled {
-  background: var(--accent);
-  color: #000;
-}
+/* header */
+.hdr{padding:calc(env(safe-area-inset-top) + 14px) 16px 12px;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0;}
+.hdr-row{display:flex;justify-content:space-between;align-items:flex-start;}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;}
+.hdr-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.streak{text-align:right;}
+.streak-n{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--amber);line-height:1;}
+.streak-l{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.wdots{display:flex;gap:5px;margin-top:10px;}
+.wdot{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;text-transform:uppercase;}
+.wdot.done{background:var(--green);color:#000;}
+.wdot.today{background:var(--accent);color:#000;}
+.wdot.rest{background:var(--card2);color:var(--muted);border:1px solid var(--border);}
+.wdot.missed{background:var(--card2);color:var(--red);border:1px solid var(--red);opacity:.5;}
 
-/* TABS */
-.tabs {
-  display: flex;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.tab {
-  flex: 1;
-  padding: 12px 4px 10px;
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-family: 'Outfit', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-}
-.tab.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-}
-.tab-emoji { font-size: 16px; }
+/* tabs */
+.dtabs{display:flex;background:var(--card);border-bottom:2px solid var(--border);flex-shrink:0;}
+.dtab{flex:1;padding:10px 2px 8px;border:none;background:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.dtab.on{color:var(--dc,var(--accent));border-bottom-color:var(--dc,var(--accent));}
+.dtab-icon{font-size:16px;}
+.stabs{display:flex;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0;}
+.stab{flex:1;padding:11px 4px;border:none;background:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;}
+.stab.on{color:var(--accent);border-bottom-color:var(--accent);}
 
-/* BODY */
-.body { padding: 14px 14px 30px; }
+/* scroll */
+.sbody{flex:1;overflow-y:auto;padding:14px 14px 24px;-webkit-overflow-scrolling:touch;}
 
-/* FORMAT CARD */
-.format-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
-  border-radius: 0 10px 10px 0;
-  padding: 11px 14px;
-  margin-bottom: 12px;
-}
-.format-label {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 4px;
-}
-.format-desc {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.5;
-  font-weight: 400;
-}
+/* bottom nav */
+.bnav{display:flex;background:var(--card);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom);flex-shrink:0;}
+.bnav-btn{flex:1;padding:10px 4px 8px;border:none;background:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);border-top:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.bnav-btn.on{color:var(--accent);border-top-color:var(--accent);}
+.bnav-icon{font-size:20px;}
 
-/* WARMUP */
-.warmup-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 11px 14px;
-  margin-bottom: 12px;
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-}
-.warmup-emoji { font-size: 20px; flex-shrink: 0; }
-.warmup-label {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 3px;
-}
-.warmup-text { font-size: 12px; color: var(--text); line-height: 1.5; font-weight: 400; }
+/* plan */
+.fmt{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--dc,var(--accent));border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:12px;}
+.fmt-lbl{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--dc,var(--accent));margin-bottom:3px;}
+.fmt-txt{font-size:12px;color:var(--muted);line-height:1.5;}
+.wu{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;gap:10px;align-items:flex-start;}
+.wu-lbl{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.wu-txt{font-size:12px;line-height:1.5;}
+.blk{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;cursor:pointer;}
+.blk.open{border-color:var(--dc,var(--accent));}
+.blk-hdr{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--card2);border-bottom:1px solid var(--border);}
+.blk-num{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--dc,var(--accent));}
+.blk-body{padding:12px 14px 0;}
+.lift-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;}
+.sets-pill{border-radius:7px;padding:5px 10px;font-size:11px;font-weight:800;white-space:nowrap;flex-shrink:0;background:var(--dc,var(--accent));color:#000;}
+.ex-name{font-size:14px;font-weight:700;line-height:1.3;}
+.form-tip{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;display:none;}
+.form-tip.show{display:block;}
+.connector{display:flex;align-items:center;gap:8px;padding:5px 0;}
+.conn-line{height:1px;background:var(--border);flex:1;}
+.conn-txt{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--dc,var(--accent));opacity:.8;white-space:nowrap;}
+.hiit-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.dur-pill{border-radius:7px;padding:5px 10px;font-size:11px;font-weight:800;white-space:nowrap;flex-shrink:0;background:transparent;border:2px solid var(--dc,var(--accent));color:var(--dc,var(--accent));}
+.blast-lbl{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-top:3px;}
+.rest-bar{border-top:1px solid var(--border);padding:8px 0;display:flex;align-items:center;gap:6px;color:var(--muted);font-size:11px;font-weight:600;}
+.fin{border:1px solid var(--dc,var(--accent));border-radius:12px;padding:14px;margin-bottom:12px;background:var(--card);}
+.fin-lbl{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--dc,var(--accent));margin-bottom:6px;}
+.fin-txt{font-size:13px;font-weight:500;line-height:1.5;}
+.formula{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;justify-content:space-around;align-items:center;}
+.fw{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--dc,var(--accent));}
+.fa{color:var(--border);font-size:12px;}
+.tips-btn{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.tips-body{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;display:none;}
+.tips-body.show{display:block;}
+.tip-row{display:flex;gap:12px;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--border);}
+.tip-row:last-child{padding-bottom:0;margin-bottom:0;border-bottom:none;}
 
-/* BLOCK CARD */
-.block-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  margin-bottom: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
-.block-card.open { border-color: var(--accent); }
-.block-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 14px;
-  background: var(--card2);
-  border-bottom: 1px solid var(--border);
-}
-.block-num {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-.block-toggle {
-  font-size: 10px;
-  color: var(--muted);
-  font-weight: 500;
-}
-.block-body { padding: 12px 14px 0; }
+/* tracker */
+.sec-lbl{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin:16px 0 10px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.card-hdr{padding:10px 14px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.card-title{font-size:14px;font-weight:700;}
+.card-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.card-body{padding:12px 14px;}
+.set-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.set-lbl{font-size:11px;font-weight:700;color:var(--muted);width:40px;flex-shrink:0;}
+.set-wrap{display:flex;align-items:center;gap:4px;flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;}
+.set-inp{background:none;border:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;width:52px;text-align:center;outline:none;}
+.set-inp::placeholder{color:var(--soft);font-weight:400;}
+.set-unit{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;}
+.set-div{color:var(--border);font-size:14px;}
+.set-del{background:none;border:none;color:var(--red);font-size:16px;cursor:pointer;padding:4px;flex-shrink:0;opacity:.6;}
+.btn{border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-weight:700;cursor:pointer;}
+.btn:active{opacity:.75;}
+.btn-sm{padding:7px 14px;font-size:12px;}
+.btn-full{width:100%;padding:14px;font-size:15px;}
+.btn-accent{background:var(--accent);color:#000;}
+.btn-green{background:var(--green);color:#000;}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--muted);}
+.btn-muted{background:var(--card2);color:var(--muted);border:1px solid var(--border);}
+.form-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+.form-inp{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:var(--text);outline:none;}
+.form-inp:focus{border-color:var(--accent);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.stat-row:last-child{border-bottom:none;}
+.done-banner{background:var(--green);border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.rest-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;margin-bottom:12px;}
+.hist-entry{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.hist-hdr{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.pill-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.pill{background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:600;}
+.pill.pr{border-color:var(--amber);color:var(--amber);}
+.pr-tag{font-size:9px;font-weight:800;background:var(--amber);color:#000;border-radius:4px;padding:1px 5px;margin-left:6px;}
+.body-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.body-row:last-child{border-bottom:none;}
+.empty{text-align:center;padding:36px 20px;color:var(--muted);}
 
-/* LIFT ROW */
-.lift-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-.sets-pill {
-  background: var(--accent);
-  color: #000;
-  border-radius: 7px;
-  padding: 5px 10px;
-  font-size: 11px;
-  font-weight: 800;
-  white-space: nowrap;
-  flex-shrink: 0;
-  letter-spacing: 0.3px;
-}
-.exercise-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.3;
-}
-.form-tip {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 4px;
-  line-height: 1.4;
-  font-weight: 400;
-  display: none;
-}
-.form-tip.visible { display: block; }
-.tip-icon { color: var(--accent); }
-
-/* ARROW CONNECTOR */
-.connector {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 0;
-}
-.connector-line {
-  height: 1px;
-  background: var(--border);
-  flex: 1;
-}
-.connector-text {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--accent);
-  white-space: nowrap;
-  opacity: 0.8;
-}
-
-/* HIIT ROW */
-.hiit-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.duration-pill {
-  background: transparent;
-  border: 2px solid var(--accent);
-  color: var(--accent);
-  border-radius: 7px;
-  padding: 5px 10px;
-  font-size: 11px;
-  font-weight: 800;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.blast-label {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #F59E0B;
-  margin-top: 3px;
-}
-
-/* REST BAR */
-.rest-bar {
-  border-top: 1px solid var(--border);
-  padding: 9px 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 600;
-}
-
-/* FINISHER */
-.finisher-card {
-  border: 1px solid var(--accent);
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 12px;
-  background: var(--card);
-  position: relative;
-  overflow: hidden;
-}
-.finisher-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  opacity: 0.04;
-}
-.finisher-label {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 7px;
-  position: relative;
-}
-.finisher-text {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1.5;
-  position: relative;
-}
-
-/* FORMULA BAR */
-.formula {
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 13px 16px;
-  margin-bottom: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.formula-word {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-.formula-arrow {
-  color: var(--border);
-  font-size: 12px;
-}
-
-/* TIPS TOGGLE */
-.tips-toggle {
-  width: 100%;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--muted);
-  cursor: pointer;
-  text-align: left;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  transition: border-color 0.2s;
-}
-.tips-toggle:hover { border-color: var(--accent); color: var(--text); }
-
-.tips-section {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 20px;
-  display: none;
-}
-.tips-section.open { display: block; }
-.tip-row {
-  display: flex;
-  gap: 12px;
-  padding-bottom: 12px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-  align-items: flex-start;
-}
-.tip-row:last-child { padding-bottom: 0; margin-bottom: 0; border-bottom: none; }
-.tip-emoji { font-size: 18px; flex-shrink: 0; }
-.tip-text { font-size: 12px; color: var(--muted); line-height: 1.5; font-weight: 400; }
-
-/* TRANSITION */
-.day-content { animation: fadeIn 0.25s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade{animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 ```
 
   </style>
 </head>
 <body>
-
 <div id="app"></div>
-
 <script>
-const DAYS = [
-  {
-    day: "Mon", label: "Chest & Back", icon: "💪",
-    focus: "Chest · Back · Full Body Burn",
-    accent: "#6366F1",
-    style: "Circuit", styleDesc: "3 rounds of 4 blocks. Each strength set flows immediately into a plyo blast, then rest.",
-    warmup: "Arm circles × 20, band pull-aparts × 15, 20 jumping jacks",
-    blocks: [
-      { lift: { name: "Barbell Bench Press", sets: "3 × 10", tip: "Control descent 2 sec down, drive explosively up" },
-        hiit: { name: "Plyo Push-Up Bursts", dur: "30 sec", tip: "Hands leave floor each rep — scale to fast push-ups if needed" }, rest: "45 sec" },
-      { lift: { name: "Bent-Over Barbell Row", sets: "3 × 10", tip: "Chest proud, elbows drive back — not up" },
-        hiit: { name: "Jump Squats", dur: "30 sec", tip: "Land soft with bent knees — protect the joints" }, rest: "45 sec" },
-      { lift: { name: "Incline Dumbbell Press", sets: "3 × 10", tip: "45° bench, squeeze pecs at top — don't lock out" },
-        hiit: { name: "Mountain Climbers", dur: "30 sec", tip: "Drive knees to chest fast — hips stay level" }, rest: "45 sec" },
-      { lift: { name: "Seated Cable Row", sets: "3 × 12", tip: "Full stretch forward, drive elbows back to ribs" },
-        hiit: { name: "Lateral Hop Overs", dur: "30 sec", tip: "Side to side over a dumbbell — stay light on feet" }, rest: "45 sec" },
-    ],
-    finisher: "🏁  Dead bugs × 15  →  Plank 30 sec  →  Repeat × 3"
-  },
-  {
-    day: "Tue", label: "Legs", icon: "🦵",
-    focus: "Quads · Hamstrings · Glutes",
-    accent: "#10B981",
-    style: "50/50", styleDesc: "Heavy lifting, then plyometric blast. Take the full 60 sec — legs need it.",
-    warmup: "Leg swings × 20 each, bodyweight squats × 15, hip circles",
-    blocks: [
-      { lift: { name: "Barbell Back Squat", sets: "4 × 10", tip: "Sit back into heels, knees track toes — go heavy" },
-        hiit: { name: "Jump Squats", dur: "30 sec", tip: "Full squat depth, explode up — arms drive overhead" }, rest: "60 sec" },
-      { lift: { name: "Romanian Deadlift (RDL)", sets: "4 × 10", tip: "Hip hinge — feel hamstring stretch, not your lower back" },
-        hiit: { name: "Jump Lunges", dur: "30 sec", tip: "Switch legs mid-air — land soft every time" }, rest: "60 sec" },
-      { lift: { name: "Bulgarian Split Squat", sets: "3 × 10 ea", tip: "Rear foot elevated, front foot far forward to stay upright" },
-        hiit: { name: "Skater Hops", dur: "30 sec", tip: "One leg landing, reach opposite hand to foot, load the glute" }, rest: "60 sec" },
-      { lift: { name: "Leg Press", sets: "3 × 12", tip: "Higher foot placement = more glutes. Don't lock knees at top." },
-        hiit: { name: "Tuck Jumps", dur: "20 sec", tip: "Drive knees to chest — quality over speed" }, rest: "45 sec" },
-    ],
-    finisher: "🏁  Hanging Knee Raises × 15  →  Ab wheel 30 sec  →  Repeat × 3"
-  },
-  {
-    day: "Thu", label: "Shoulders & Arms", icon: "🏋️",
-    focus: "Delts · Biceps · Triceps",
-    accent: "#EF4444",
-    style: "Intervals", styleDesc: "Lifting move alternates with a 30-sec HIIT burst. Heart rate stays elevated the whole time.",
-    warmup: "Thoracic rotations, band pull-aparts × 15, light lateral raises × 12",
-    blocks: [
-      { lift: { name: "Dumbbell Shoulder Press", sets: "3 × 10", tip: "Don't lock elbows at top — keep tension on the delt" },
-        hiit: { name: "Star Jumps", dur: "30 sec", tip: "Explode arms and legs wide simultaneously — full range" }, rest: "45 sec" },
-      { lift: { name: "Lateral Raise + Arnold Press", sets: "3 × 12/10", tip: "Light on laterals — lead with elbows. Arnold: rotate palms out as you press." },
-        hiit: { name: "High Knees", dur: "30 sec", tip: "Drive knees above hip height — pump arms hard" }, rest: "45 sec" },
-      { lift: { name: "Barbell Bicep Curl", sets: "3 × 10", tip: "Full ROM — all the way down, hard squeeze at top" },
-        hiit: { name: "Burpees", dur: "30 sec", tip: "Chest to floor each rep — scale to no-jump if needed" }, rest: "45 sec" },
-      { lift: { name: "Overhead Tricep Extension", sets: "3 × 12", tip: "EZ bar or rope — elbows stay tight, only forearms move" },
-        hiit: { name: "Skaters (Lateral Bounds)", dur: "30 sec", tip: "Low athletic stance, load the outside leg on each landing" }, rest: "45 sec" },
-    ],
-    finisher: "🏁  Cable crunches × 15  →  Bicycle crunches × 20  →  Repeat × 3"
-  },
-  {
-    day: "Fri", label: "Full Body Plyo", icon: "🔥",
-    focus: "Full Body · Max Burn · End Strong",
-    accent: "#F59E0B",
-    style: "HIIT + Strength", styleDesc: "Heavy compounds up top, then pure plyo circuit to close the week. This one leaves a mark.",
-    warmup: "Hip hinges × 15, glute bridges × 15, lateral band walks × 20",
-    blocks: [
-      { lift: { name: "Deadlift or RDL", sets: "4 × 8", tip: "Go heavy — this is your biggest compound move of the week" },
-        hiit: { name: "Box Jumps", dur: "30 sec", tip: "Land fully on box with soft knees — step down, don't jump down" }, rest: "60 sec" },
-      { lift: { name: "Barbell Hip Thrust", sets: "3 × 12", tip: "Back on bench, drive through heels — hard squeeze at top" },
-        hiit: { name: "Jump Lunges", dur: "30 sec", tip: "Explosive switch — chest tall, land quiet" }, rest: "45 sec" },
-      { lift: { name: "Walking Lunges (DBs)", sets: "3 × 12 ea", tip: "Stay tall — front knee doesn't drift past toes" },
-        hiit: { name: "180° Squat Jumps", dur: "30 sec", tip: "Jump, rotate 180° — absorb landing and go right back" }, rest: "45 sec" },
-      { lift: { name: "Goblet Squat", sets: "3 × 15", tip: "Lighter weight, full depth — this is a burner, not a max lift" },
-        hiit: { name: "Plyo Push-Up Bursts", dur: "30 sec", tip: "Chest to floor, explosive press — clap optional" }, rest: "30 sec" },
-    ],
-    finisher: "🏁  AMRAP 4 min — Burpees × 5 → Tuck Jumps × 8 → Mountain Climbers × 20 → Rest 20 sec"
-  }
+
+// ── PLAN DATA ──────────────────────────────────────────────────────────────
+var PLAN = [
+{ day:“Mon”, label:“Chest & Back”, icon:“💪”, focus:“Chest · Back · Full Body Burn”, color:”#6366F1”,
+style:“Circuit”, styleDesc:“3 rounds of 4 blocks. Each strength set flows immediately into a plyo blast, then rest.”,
+warmup:“Arm circles x20, band pull-aparts x15, 20 jumping jacks”,
+blocks:[
+{lift:{name:“Barbell Bench Press”,sets:“3x10”,tip:“Control descent 2 sec down, drive explosively up”},hiit:{name:“Plyo Push-Up Bursts”,dur:“30 sec”,tip:“Hands leave floor each rep — scale to fast push-ups if needed”},rest:“45 sec”},
+{lift:{name:“Bent-Over Barbell Row”,sets:“3x10”,tip:“Chest proud, elbows drive back — not up”},hiit:{name:“Jump Squats”,dur:“30 sec”,tip:“Land soft with bent knees — protect the joints”},rest:“45 sec”},
+{lift:{name:“Incline Dumbbell Press”,sets:“3x10”,tip:“45 deg bench, squeeze pecs at top — do not lock out”},hiit:{name:“Mountain Climbers”,dur:“30 sec”,tip:“Drive knees to chest fast — hips stay level”},rest:“45 sec”},
+{lift:{name:“Seated Cable Row”,sets:“3x12”,tip:“Full stretch forward, drive elbows back to ribs”},hiit:{name:“Lateral Hop Overs”,dur:“30 sec”,tip:“Side to side over a dumbbell — stay light on feet”},rest:“45 sec”}
+], fin:“Dead bugs x15 — Plank 30 sec — Repeat x3” },
+{ day:“Tue”, label:“Legs”, icon:“🦵”, focus:“Quads · Hamstrings · Glutes”, color:”#10B981”,
+style:“50/50”, styleDesc:“Heavy lifting first, then plyometric blast. Take the full 60 sec rest — legs need it.”,
+warmup:“Leg swings x20 each, bodyweight squats x15, hip circles”,
+blocks:[
+{lift:{name:“Barbell Back Squat”,sets:“4x10”,tip:“Sit back into heels, knees track toes — go heavy”},hiit:{name:“Jump Squats”,dur:“30 sec”,tip:“Full squat depth, explode up — arms drive overhead”},rest:“60 sec”},
+{lift:{name:“Romanian Deadlift”,sets:“4x10”,tip:“Hip hinge — feel hamstring stretch, not your lower back”},hiit:{name:“Jump Lunges”,dur:“30 sec”,tip:“Switch legs mid-air — land soft every time”},rest:“60 sec”},
+{lift:{name:“Bulgarian Split Squat”,sets:“3x10 ea”,tip:“Rear foot elevated, front foot far forward to stay upright”},hiit:{name:“Skater Hops”,dur:“30 sec”,tip:“One leg landing, reach opposite hand to foot, load the glute”},rest:“60 sec”},
+{lift:{name:“Leg Press”,sets:“3x12”,tip:“Higher foot placement = more glutes. Do not lock knees at top.”},hiit:{name:“Tuck Jumps”,dur:“20 sec”,tip:“Drive knees to chest — quality over speed”},rest:“45 sec”}
+], fin:“Hanging Knee Raises x15 — Ab wheel 30 sec — Repeat x3” },
+{ day:“Thu”, label:“Shoulders and Arms”, icon:“🏋️”, focus:“Delts · Biceps · Triceps”, color:”#EF4444”,
+style:“Intervals”, styleDesc:“Alternating lifting and a 30-sec HIIT burst. Heart rate stays elevated the whole time.”,
+warmup:“Thoracic rotations, band pull-aparts x15, light lateral raises x12”,
+blocks:[
+{lift:{name:“Dumbbell Shoulder Press”,sets:“3x10”,tip:“Do not lock elbows at top — keep tension on the delt”},hiit:{name:“Star Jumps”,dur:“30 sec”,tip:“Explode arms and legs wide simultaneously — full range”},rest:“45 sec”},
+{lift:{name:“Lateral Raise and Arnold Press”,sets:“3x12/10”,tip:“Light on laterals — lead with elbows. Arnold: rotate palms out as you press.”},hiit:{name:“High Knees”,dur:“30 sec”,tip:“Drive knees above hip height — pump arms hard”},rest:“45 sec”},
+{lift:{name:“Barbell Bicep Curl”,sets:“3x10”,tip:“Full ROM — all the way down, hard squeeze at top”},hiit:{name:“Burpees”,dur:“30 sec”,tip:“Chest to floor each rep — scale to no-jump if needed”},rest:“45 sec”},
+{lift:{name:“Overhead Tricep Extension”,sets:“3x12”,tip:“EZ bar or rope — elbows stay tight, only forearms move”},hiit:{name:“Skaters”,dur:“30 sec”,tip:“Low athletic stance, load the outside leg on each landing”},rest:“45 sec”}
+], fin:“Cable crunches x15 — Bicycle crunches x20 — Repeat x3” },
+{ day:“Fri”, label:“Full Body Plyo”, icon:“🔥”, focus:“Full Body · Max Burn · End Strong”, color:”#F59E0B”,
+style:“HIIT + Strength”, styleDesc:“Heavy compounds up top, then pure plyo circuit to close the week. This one leaves a mark.”,
+warmup:“Hip hinges x15, glute bridges x15, lateral band walks x20”,
+blocks:[
+{lift:{name:“Deadlift or RDL”,sets:“4x8”,tip:“Go heavy — this is your biggest compound move of the week”},hiit:{name:“Box Jumps”,dur:“30 sec”,tip:“Land fully on box with soft knees — step down, do not jump down”},rest:“60 sec”},
+{lift:{name:“Barbell Hip Thrust”,sets:“3x12”,tip:“Back on bench, drive through heels — hard squeeze at top”},hiit:{name:“Jump Lunges”,dur:“30 sec”,tip:“Explosive switch — chest tall, land quiet”},rest:“45 sec”},
+{lift:{name:“Walking Lunges with DBs”,sets:“3x12 ea”,tip:“Stay tall — front knee does not drift past toes”},hiit:{name:“180 Squat Jumps”,dur:“30 sec”,tip:“Jump, rotate 180 degrees — absorb landing and go right back”},rest:“45 sec”},
+{lift:{name:“Goblet Squat”,sets:“3x15”,tip:“Lighter weight, full depth — this is a burner, not a max lift”},hiit:{name:“Plyo Push-Up Bursts”,dur:“30 sec”,tip:“Chest to floor, explosive press — clap optional”},rest:“30 sec”}
+], fin:“AMRAP 4 min — Burpees x5 — Tuck Jumps x8 — Mountain Climbers x20 — Rest 20 sec” }
 ];
 
-const TIPS = [
-  { e: "⚖️", t: "Eat near maintenance on workout days, ~200–300 cal deficit on rest days. This drives recomp without stalling muscle growth." },
-  { e: "🥩", t: "Target 180–200g of protein daily. At 220 lbs, protein is your most important variable." },
-  { e: "⚡", t: "The plyo blasts are where the fat burn happens. Don't sandbag them — that's the whole LIIFT formula working." },
-  { e: "📈", t: "Track your lifts. Hit the top of the rep range clean two sessions in a row? Add weight." },
-  { e: "😴", t: "7–8 hrs of sleep. Muscle is built during recovery, not during the workout." },
-  { e: "🚶", t: "7,000–10,000 steps on rest days. Low effort, high fat-burn payoff over weeks." },
+var TIPS = [
+{e:“⚖️”, t:“Eat near maintenance on workout days, ~200-300 cal deficit on rest days. This drives recomp without stalling muscle.”},
+{e:“🥩”, t:“Target 180-200g of protein daily. At 220 lbs, protein is your most important variable.”},
+{e:“⚡”, t:“The plyo blasts are where the fat burn happens — do not sandbag them. That is the whole LIIFT formula.”},
+{e:“📈”, t:“Hit the top of the rep range with clean form two sessions in a row? Add weight.”},
+{e:“😴”, t:“7-8 hrs of sleep. Muscle is built during recovery, not during the workout.”},
+{e:“🚶”, t:“7,000-10,000 steps on rest days. Low effort, high fat-burn payoff over weeks.”}
 ];
 
-let activeDay = 0;
-let openBlocks = {};
-let tipsOpen = false;
+// ── TRACKER DATA ───────────────────────────────────────────────────────────
+var SCHEDULE = {
+1: { label:“Chest and Back”,     color:”#6366F1”, exercises:[“Barbell Bench Press”,“Bent-Over Barbell Row”,“Incline Dumbbell Press”,“Seated Cable Row”] },
+2: { label:“Legs”,               color:”#10B981”, exercises:[“Barbell Back Squat”,“Romanian Deadlift”,“Bulgarian Split Squat”,“Leg Press”] },
+4: { label:“Shoulders and Arms”, color:”#EF4444”, exercises:[“Dumbbell Shoulder Press”,“Lateral Raise and Arnold Press”,“Barbell Bicep Curl”,“Overhead Tricep Extension”] },
+5: { label:“Full Body Plyo”,     color:”#F59E0B”, exercises:[“Deadlift or RDL”,“Barbell Hip Thrust”,“Walking Lunges”,“Goblet Squat”] }
+};
+var WORKOUT_DAYS = [1, 2, 4, 5];
+var DAY_NAMES = [“Sun”,“Mon”,“Tue”,“Wed”,“Thu”,“Fri”,“Sat”];
+var MONTHS = [“Jan”,“Feb”,“Mar”,“Apr”,“May”,“Jun”,“Jul”,“Aug”,“Sep”,“Oct”,“Nov”,“Dec”];
 
-function setAccent(color) {
-  document.documentElement.style.setProperty('--accent', color);
-  document.documentElement.style.setProperty('--accent-grad', `linear-gradient(135deg, ${color}, ${color}88)`);
+// ── STATE ──────────────────────────────────────────────────────────────────
+var mainTab = “plan”;
+var planDayIndex = 0;
+var trackTab = “today”;
+var openBlocks = {};
+var openCards = {};
+var openHist = {};
+var tipsOpen = false;
+var db = loadDB();
+
+function loadDB() {
+try {
+var raw = localStorage.getItem(“workout_db”);
+if (raw) return JSON.parse(raw);
+} catch(e) {}
+return { workouts: {}, body: [] };
+}
+function saveDB() {
+try { localStorage.setItem(“workout_db”, JSON.stringify(db)); } catch(e) {}
 }
 
-function render() {
-  const d = DAYS[activeDay];
-  setAccent(d.accent);
+// ── HELPERS ────────────────────────────────────────────────────────────────
+function todayKey() {
+var d = new Date();
+var m = String(d.getMonth()+1).padStart(2,“0”);
+var day = String(d.getDate()).padStart(2,“0”);
+return d.getFullYear() + “-” + m + “-” + day;
+}
+function todayDow() { return new Date().getDay(); }
 
-  document.getElementById('app').innerHTML = `
-    <div class="header">
-      <div class="header-eyebrow">LIIFT4-Style · Mon / Tue / Thu / Fri</div>
-      <div class="header-title">${d.icon} ${d.label}</div>
-      <div class="header-sub">${d.focus}</div>
-      <div class="header-tags">
-        <span class="tag filled">${d.style}</span>
-        <span class="tag">30–45 min</span>
-        <span class="tag">Lift → HIIT → Rest</span>
-      </div>
-    </div>
-
-    <div class="tabs">
-      ${DAYS.map((day, i) => `
-        <button class="tab ${i === activeDay ? 'active' : ''}" onclick="switchDay(${i})">
-          <span class="tab-emoji">${day.icon}</span>
-          ${day.day}
-        </button>
-      `).join('')}
-    </div>
-
-    <div class="body day-content">
-
-      <div class="format-card">
-        <div class="format-label">${d.style} Format</div>
-        <div class="format-desc">${d.styleDesc}</div>
-      </div>
-
-      <div class="warmup-card">
-        <span class="warmup-emoji">🔥</span>
-        <div>
-          <div class="warmup-label">Warm-Up · 3 min</div>
-          <div class="warmup-text">${d.warmup}</div>
-        </div>
-      </div>
-
-      ${d.blocks.map((b, i) => `
-        <div class="block-card ${openBlocks[activeDay + '-' + i] ? 'open' : ''}" onclick="toggleBlock(${i})">
-          <div class="block-header">
-            <span class="block-num">Block ${i + 1}</span>
-            <span class="block-toggle">${openBlocks[activeDay + '-' + i] ? '▲ hide tips' : '▼ form tips'}</span>
-          </div>
-          <div class="block-body">
-            <div class="lift-row">
-              <div class="sets-pill">${b.lift.sets}</div>
-              <div>
-                <div class="exercise-name">${b.lift.name}</div>
-                <div class="form-tip ${openBlocks[activeDay + '-' + i] ? 'visible' : ''}">
-                  <span class="tip-icon">📌</span> ${b.lift.tip}
-                </div>
-              </div>
-            </div>
-            <div class="connector">
-              <div class="connector-line"></div>
-              <div class="connector-text">↓ immediately into</div>
-              <div class="connector-line"></div>
-            </div>
-            <div class="hiit-row">
-              <div class="duration-pill">${b.hiit.dur}</div>
-              <div>
-                <div class="exercise-name">${b.hiit.name}</div>
-                <div class="blast-label">⚡ PLYO BLAST</div>
-                <div class="form-tip ${openBlocks[activeDay + '-' + i] ? 'visible' : ''}">
-                  <span class="tip-icon">📌</span> ${b.hiit.tip}
-                </div>
-              </div>
-            </div>
-            <div class="rest-bar">⏱ REST ${b.rest} — then repeat block</div>
-          </div>
-        </div>
-      `).join('')}
-
-      <div class="finisher-card">
-        <div class="finisher-label">Core Finisher</div>
-        <div class="finisher-text">${d.finisher}</div>
-      </div>
-
-      <div class="formula">
-        <span class="formula-word" style="color: var(--accent)">Lift</span>
-        <span class="formula-arrow">→</span>
-        <span class="formula-word" style="color: var(--accent)">HIIT</span>
-        <span class="formula-arrow">→</span>
-        <span class="formula-word" style="color: var(--accent)">Rest</span>
-        <span class="formula-arrow">→</span>
-        <span class="formula-word" style="color: var(--accent)">Repeat</span>
-      </div>
-
-      <button class="tips-toggle" onclick="toggleTips()">
-        <span>Nutrition & Recomp Tips</span>
-        <span>${tipsOpen ? '▲' : '▼'}</span>
-      </button>
-      <div class="tips-section ${tipsOpen ? 'open' : ''}">
-        ${TIPS.map(t => `
-          <div class="tip-row">
-            <span class="tip-emoji">${t.e}</span>
-            <span class="tip-text">${t.t}</span>
-          </div>
-        `).join('')}
-      </div>
-
-    </div>
-  `;
+function formatDate(str) {
+var parts = str.split(”-”);
+return MONTHS[parseInt(parts[1])-1] + “ “ + parseInt(parts[2]) + “, “ + parts[0];
 }
 
-function switchDay(i) {
-  activeDay = i;
-  render();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function getStreak() {
+var count = 0;
+var d = new Date();
+for (var i = 0; i < 60; i++) {
+var m = String(d.getMonth()+1).padStart(2,“0”);
+var day = String(d.getDate()).padStart(2,“0”);
+var key = d.getFullYear() + “-” + m + “-” + day;
+var dow = d.getDay();
+if (WORKOUT_DAYS.indexOf(dow) >= 0) {
+if (db.workouts[key] && db.workouts[key].completed) {
+count++;
+} else if (key !== todayKey()) {
+break;
+}
+}
+d.setDate(d.getDate() - 1);
+}
+return count;
 }
 
+function getWeekDots() {
+var now = new Date();
+var mon = new Date(now);
+mon.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+var dots = [];
+for (var i = 0; i < 7; i++) {
+var d = new Date(mon);
+d.setDate(mon.getDate() + i);
+var m = String(d.getMonth()+1).padStart(2,“0”);
+var day = String(d.getDate()).padStart(2,“0”);
+var key = d.getFullYear() + “-” + m + “-” + day;
+var dow = d.getDay();
+var isToday = key === todayKey();
+var isWorkoutDay = WORKOUT_DAYS.indexOf(dow) >= 0;
+var isDone = db.workouts[key] && db.workouts[key].completed;
+var isPast = d < new Date() && !isToday;
+var cls = “rest”;
+if (isDone) cls = “done”;
+else if (isToday && isWorkoutDay) cls = “today”;
+else if (isPast && isWorkoutDay) cls = “missed”;
+dots.push({ label: DAY_NAMES[dow][0], cls: cls });
+}
+return dots;
+}
+
+function getPR(exercise) {
+var best = 0;
+var keys = Object.keys(db.workouts);
+for (var i = 0; i < keys.length; i++) {
+var w = db.workouts[keys[i]];
+var sets = w.exercises && w.exercises[exercise];
+if (sets) {
+for (var j = 0; j < sets.length; j++) {
+if (sets[j].weight > best) best = sets[j].weight;
+}
+}
+}
+return best;
+}
+
+function getLastSession(exercise) {
+var sortedKeys = Object.keys(db.workouts).sort().reverse();
+for (var i = 0; i < sortedKeys.length; i++) {
+var key = sortedKeys[i];
+if (key === todayKey()) continue;
+var sets = db.workouts[key] && db.workouts[key].exercises && db.workouts[key].exercises[exercise];
+if (sets && sets.length > 0) return sets;
+}
+return null;
+}
+
+function ensureToday() {
+var key = todayKey();
+var dow = todayDow();
+if (!db.workouts[key]) {
+db.workouts[key] = { day: dow, completed: false, exercises: {} };
+}
+return db.workouts[key];
+}
+
+// ── MUTATIONS ──────────────────────────────────────────────────────────────
+function addSet(exercise) {
+var w = ensureToday();
+if (!w.exercises[exercise]) w.exercises[exercise] = [];
+w.exercises[exercise].push({ weight: “”, reps: “” });
+saveDB();
+render();
+}
+
+function removeSet(exercise, idx) {
+var w = ensureToday();
+if (w.exercises[exercise]) w.exercises[exercise].splice(idx, 1);
+saveDB();
+render();
+}
+
+function updateSetWeight(exercise, idx, val) {
+var w = ensureToday();
+if (!w.exercises[exercise]) w.exercises[exercise] = [];
+if (!w.exercises[exercise][idx]) w.exercises[exercise][idx] = { weight:””, reps:”” };
+w.exercises[exercise][idx].weight = val === “” ? “” : parseFloat(val);
+saveDB();
+}
+
+function updateSetReps(exercise, idx, val) {
+var w = ensureToday();
+if (!w.exercises[exercise]) w.exercises[exercise] = [];
+if (!w.exercises[exercise][idx]) w.exercises[exercise][idx] = { weight:””, reps:”” };
+w.exercises[exercise][idx].reps = val === “” ? “” : parseFloat(val);
+saveDB();
+}
+
+function markComplete() {
+ensureToday().completed = true;
+saveDB();
+render();
+}
+
+function markIncomplete() {
+var key = todayKey();
+if (db.workouts[key]) db.workouts[key].completed = false;
+saveDB();
+render();
+}
+
+function setManualDay(dow) {
+var key = todayKey();
+if (!db.workouts[key]) db.workouts[key] = { day: parseInt(dow), completed: false, exercises: {} };
+else db.workouts[key].day = parseInt(dow);
+saveDB();
+render();
+}
+
+function saveBodyStats() {
+var wt = document.getElementById(“inp-weight”);
+var ch = document.getElementById(“inp-chest”);
+var wa = document.getElementById(“inp-waist”);
+var ar = document.getElementById(“inp-arms”);
+var lg = document.getElementById(“inp-legs”);
+if (!wt || !wt.value) { alert(“Please enter your weight.”); return; }
+var entry = { date: todayKey(), weight: parseFloat(wt.value) };
+if (ch && ch.value) entry.chest = parseFloat(ch.value);
+if (wa && wa.value) entry.waist = parseFloat(wa.value);
+if (ar && ar.value) entry.arms = parseFloat(ar.value);
+if (lg && lg.value) entry.legs = parseFloat(lg.value);
+db.body.unshift(entry);
+saveDB();
+render();
+}
+
+// ── TOGGLES ────────────────────────────────────────────────────────────────
+function switchMain(t) { mainTab = t; render(); window.scrollTo(0,0); }
+function switchPlanDay(i) { planDayIndex = i; render(); window.scrollTo(0,0); }
+function switchTrackTab(t) { trackTab = t; render(); window.scrollTo(0,0); }
 function toggleBlock(i) {
-  const key = activeDay + '-' + i;
-  openBlocks[key] = !openBlocks[key];
-  render();
+var key = planDayIndex + “-” + i;
+openBlocks[key] = !(openBlocks[key] !== false && openBlocks[key] !== undefined ? openBlocks[key] : true);
+render();
+}
+function toggleCard(idx) { openCards[idx] = !openCards[idx]; render(); }
+function toggleHist(key) { openHist[key] = !openHist[key]; render(); }
+function toggleTips() { tipsOpen = !tipsOpen; render(); }
+
+// ── RENDER HEADER ──────────────────────────────────────────────────────────
+function renderHeader() {
+var streak = getStreak();
+if (mainTab === “plan”) {
+var d = PLAN[planDayIndex];
+return ‘<div class="hdr">’ +
+‘<div class="hdr-row">’ +
+‘<div><div class="hdr-title" style="color:' + d.color + '">’ + d.icon + ’ ’ + d.label + ‘</div>’ +
+‘<div class="hdr-sub">’ + d.focus + ‘</div></div>’ +
+‘<div class="streak"><div class="streak-n">’ + streak + ’ 🔥</div><div class="streak-l">Streak</div></div>’ +
+‘</div>’ +
+‘</div>’;
+}
+var dots = getWeekDots();
+var dotHtml = dots.map(function(d) {
+return ‘<div class="wdot ' + d.cls + '">’ + d.label + ‘</div>’;
+}).join(’’);
+var dateStr = new Date().toLocaleDateString(‘en-US’, { weekday:‘long’, month:‘long’, day:‘numeric’ });
+return ‘<div class="hdr">’ +
+‘<div class="hdr-row">’ +
+‘<div><div class="hdr-title" style="color:var(--accent)">📊 Tracker</div>’ +
+‘<div class="hdr-sub">’ + dateStr + ‘</div></div>’ +
+‘<div class="streak"><div class="streak-n">’ + streak + ’ 🔥</div><div class="streak-l">Streak</div></div>’ +
+‘</div>’ +
+‘<div class="wdots">’ + dotHtml + ‘</div>’ +
+‘</div>’;
 }
 
-function toggleTips() {
-  tipsOpen = !tipsOpen;
-  render();
+// ── RENDER PLAN ────────────────────────────────────────────────────────────
+function renderPlan() {
+var d = PLAN[planDayIndex];
+var tabHtml = PLAN.map(function(p, i) {
+return ‘<button class="dtab ' + (i === planDayIndex ? 'on' : '') + '" style="--dc:' + p.color + '" onclick="switchPlanDay(' + i + ')">’ +
+‘<span class="dtab-icon">’ + p.icon + ‘</span>’ + p.day + ‘</button>’;
+}).join(’’);
+
+var blocksHtml = d.blocks.map(function(b, i) {
+var key = planDayIndex + “-” + i;
+var isOpen = openBlocks[key] !== false;
+return ‘<div class="blk ' + (isOpen ? 'open' : '') + '" onclick="toggleBlock(' + i + ')">’ +
+’<div class="blk-hdr"><span class="blk-num">Block ’ + (i+1) + ‘</span>’ +
+‘<span style="font-size:10px;color:var(--muted)">’ + (isOpen ? ‘▲ hide tips’ : ‘▼ form tips’) + ‘</span></div>’ +
+‘<div class="blk-body">’ +
+‘<div class="lift-row">’ +
+‘<div class="sets-pill">’ + b.lift.sets + ‘</div>’ +
+‘<div><div class="ex-name">’ + b.lift.name + ‘</div>’ +
+‘<div class="form-tip ' + (isOpen ? 'show' : '') + '">📌 ’ + b.lift.tip + ‘</div></div>’ +
+‘</div>’ +
+‘<div class="connector"><div class="conn-line"></div><div class="conn-txt">↓ immediately into</div><div class="conn-line"></div></div>’ +
+‘<div class="hiit-row">’ +
+‘<div class="dur-pill">’ + b.hiit.dur + ‘</div>’ +
+‘<div><div class="ex-name">’ + b.hiit.name + ‘</div>’ +
+‘<div class="blast-lbl">⚡ PLYO BLAST</div>’ +
+‘<div class="form-tip ' + (isOpen ? 'show' : '') + '">📌 ’ + b.hiit.tip + ‘</div></div>’ +
+‘</div>’ +
+‘<div class="rest-bar">⏱ REST ’ + b.rest + ’ — then repeat block</div>’ +
+‘</div>’ +
+‘</div>’;
+}).join(’’);
+
+var tipsHtml = TIPS.map(function(t, i) {
+var isLast = i === TIPS.length - 1;
+return ‘<div class=“tip-row” ’ + (isLast ? ‘style=“border:none;margin:0;padding:0”’ : ‘’) + ‘>’ +
+‘<span style="font-size:18px">’ + t.e + ‘</span>’ +
+‘<span style="font-size:12px;color:var(--muted);line-height:1.5">’ + t.t + ‘</span>’ +
+‘</div>’;
+}).join(’’);
+
+return ‘<div class="dtabs">’ + tabHtml + ‘</div>’ +
+‘<div class="sbody fade" style="--dc:' + d.color + '">’ +
+‘<div class="fmt"><div class="fmt-lbl">’ + d.style + ’ Format</div><div class="fmt-txt">’ + d.styleDesc + ‘</div></div>’ +
+‘<div class="wu"><span style="font-size:20px">🔥</span><div><div class="wu-lbl">Warm-Up · 3 min</div><div class="wu-txt">’ + d.warmup + ‘</div></div></div>’ +
+blocksHtml +
+‘<div class="fin"><div class="fin-lbl">🏁 Core Finisher</div><div class="fin-txt">’ + d.fin + ‘</div></div>’ +
+‘<div class="formula"><span class="fw">Lift</span><span class="fa">→</span><span class="fw">HIIT</span><span class="fa">→</span><span class="fw">Rest</span><span class="fa">→</span><span class="fw">Repeat</span></div>’ +
+‘<button class="tips-btn" onclick="toggleTips()"><span>Nutrition and Recomp Tips</span><span>’ + (tipsOpen ? ‘▲’ : ‘▼’) + ‘</span></button>’ +
+‘<div class="tips-body ' + (tipsOpen ? 'show' : '') + '">’ + tipsHtml + ‘</div>’ +
+‘</div>’;
 }
+
+// ── RENDER TRACK ───────────────────────────────────────────────────────────
+function renderTrack() {
+var tabs = [[“today”,“🏋️ Today”],[“history”,“📊 History”],[“body”,“⚖️ Body”]];
+var tabHtml = tabs.map(function(t) {
+return ‘<button class="stab ' + (trackTab === t[0] ? 'on' : '') + '" onclick="switchTrackTab(\'' + t[0] + '\')">’ + t[1] + ‘</button>’;
+}).join(’’);
+var body = “”;
+if (trackTab === “today”) body = renderTrackToday();
+else if (trackTab === “history”) body = renderTrackHistory();
+else body = renderTrackBody();
+return ‘<div class="stabs">’ + tabHtml + ‘</div><div class="sbody fade">’ + body + ‘</div>’;
+}
+
+function renderTrackToday() {
+var dow = todayDow();
+var workout = SCHEDULE[dow];
+var key = todayKey();
+var entry = db.workouts[key];
+
+if (!workout) {
+var btns = Object.keys(SCHEDULE).map(function(d) {
+return ‘<button class="btn btn-muted btn-sm" style="padding:12px;text-align:left;border-radius:10px;width:100%" onclick="setManualDay(' + d + ')">’ +
+‘<div style="font-size:11px;font-weight:700;color:var(--accent)">’ + DAY_NAMES[d] + ‘</div>’ +
+‘<div style="font-size:12px;margin-top:2px">’ + SCHEDULE[d].label + ‘</div>’ +
+‘</button>’;
+}).join(’’);
+return ‘<div class="rest-card"><div style="font-size:36px;margin-bottom:10px">😴</div>’ +
+‘<div style="font-family:Bebas Neue,sans-serif;font-size:24px;letter-spacing:2px;color:var(--muted)">Rest Day</div>’ +
+‘<div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5">Recovery is where the muscle is built.</div></div>’ +
+‘<div class="sec-lbl">Log a workout anyway</div>’ +
+‘<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">’ + btns + ‘</div>’;
+}
+
+if (entry && entry.completed) {
+return ‘<div class="done-banner"><span style="font-size:28px">✅</span>’ +
+‘<div><div style="font-size:14px;font-weight:700;color:#000">Workout Complete!</div>’ +
+‘<div style="font-size:12px;color:#000;opacity:.7">’ + workout.label + ’ · ’ + formatDate(key) + ‘</div></div></div>’ +
+renderExCards(workout, key, true) +
+‘<div style="margin-top:12px"><button class="btn btn-outline btn-full" onclick="markIncomplete()">Undo Complete</button></div>’;
+}
+
+return ‘<div style="background:var(--card);border:1px solid ' + workout.color + '40;border-left:3px solid ' + workout.color + ';border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:14px">’ +
+’<div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:' + workout.color + ';margin-bottom:2px">Today · ’ + DAY_NAMES[dow] + ‘</div>’ +
+‘<div style="font-size:18px;font-weight:800">’ + workout.label + ‘</div></div>’ +
+renderExCards(workout, key, false) +
+‘<div style="margin-top:14px"><button class="btn btn-green btn-full" onclick="markComplete()">✓ Mark Workout Complete</button></div>’;
+}
+
+function renderExCards(workout, dateKey, readOnly) {
+var entry = db.workouts[dateKey] || { exercises: {} };
+return workout.exercises.map(function(ex, cardIdx) {
+var sets = (entry.exercises && entry.exercises[ex]) || [];
+var last = getLastSession(ex);
+var pr = getPR(ex);
+var isOpen = openCards[cardIdx];
+
+```
+var lastHtml = "";
+if (last) {
+  var lastStr = last.map(function(s) { return s.weight + "lbs x" + s.reps; }).join(", ");
+  lastHtml = '<div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-style:italic">Last: ' + lastStr + '</div>';
+}
+
+var setsHtml = sets.map(function(s, si) {
+  var delBtn = readOnly ? "" : '<button class="set-del" onclick="removeSet(\'' + cardIdx + '\',' + si + ')">✕</button>';
+  return '<div class="set-row">' +
+    '<div class="set-lbl">Set ' + (si+1) + '</div>' +
+    '<div class="set-wrap">' +
+      '<input class="set-inp" type="number" inputmode="decimal" placeholder="' + ((last && last[si] && last[si].weight) || "0") + '" value="' + (s.weight || "") + '"' + (readOnly ? ' readonly' : '') + ' onchange="updateSetWeight(\'' + cardIdx + '\',' + si + ',this.value)">' +
+      '<span class="set-unit">lbs</span>' +
+      '<span class="set-div">|</span>' +
+      '<input class="set-inp" type="number" inputmode="numeric" placeholder="' + ((last && last[si] && last[si].reps) || "0") + '" value="' + (s.reps || "") + '" style="width:42px"' + (readOnly ? ' readonly' : '') + ' onchange="updateSetReps(\'' + cardIdx + '\',' + si + ',this.value)">' +
+      '<span class="set-unit">reps</span>' +
+    '</div>' + delBtn + '</div>';
+}).join('');
+
+var addBtn = readOnly ? "" : '<button class="btn btn-outline btn-sm" style="margin-top:4px;width:100%" onclick="addSet(\'' + cardIdx + '\')">+ Add Set</button>';
+var prTag = pr > 0 ? '<span class="pr-tag">PR ' + pr + 'lbs</span>' : "";
+
+return '<div class="card">' +
+  '<div class="card-hdr" onclick="toggleCard(' + cardIdx + ')">' +
+    '<div><div class="card-title">' + ex + prTag + '</div>' +
+    '<div class="card-sub">' + sets.length + ' set' + (sets.length !== 1 ? 's' : '') + ' logged</div></div>' +
+    '<span style="font-size:12px;color:var(--muted)">' + (isOpen ? '▲' : '▼') + '</span>' +
+  '</div>' +
+  (isOpen ? '<div class="card-body">' + lastHtml + setsHtml + addBtn + '</div>' : '') +
+'</div>';
+```
+
+}).join(’’);
+}
+
+function renderTrackHistory() {
+var keys = Object.keys(db.workouts).sort().reverse();
+if (!keys.length) {
+return ‘<div class="empty"><div style="font-size:38px;margin-bottom:10px">📋</div>’ +
+‘<div style="font-size:13px;line-height:1.5">No workouts logged yet.<br>Complete your first session to see history here.</div></div>’;
+}
+var allEx = [];
+Object.keys(SCHEDULE).forEach(function(k) { allEx = allEx.concat(SCHEDULE[k].exercises); });
+var prRows = allEx.map(function(ex) {
+var pr = getPR(ex);
+return pr > 0 ? ‘<div class="stat-row"><div style="font-size:13px;font-weight:600">’ + ex + ‘</div><div style="font-size:13px;font-weight:800;color:var(--accent)">’ + pr + ’ lbs</div></div>’ : ‘’;
+}).filter(Boolean).join(’’);
+
+var histHtml = keys.map(function(k) {
+var w = db.workouts[k];
+var wk = SCHEDULE[w.day];
+if (!wk) return ‘’;
+var isOpen = openHist[k];
+var exKeys = w.exercises ? Object.keys(w.exercises) : [];
+var exHtml = ‘’;
+if (isOpen) {
+if (exKeys.length) {
+exHtml = exKeys.map(function(ex) {
+var sets = w.exercises[ex];
+var pr = getPR(ex);
+var pillsHtml = sets.map(function(s) {
+var isPR = s.weight && s.weight >= pr && pr > 0;
+return ‘<span class="pill ' + (isPR ? 'pr' : '') + '">’ + (s.weight || ‘?’) + ‘lbs x ’ + (s.reps || ‘?’) + (isPR ? ’ 🏆’ : ‘’) + ‘</span>’;
+}).join(’’);
+return ‘<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:10px 0 5px">’ + ex + ‘</div>’ +
+‘<div class="pill-wrap">’ + pillsHtml + ‘</div>’;
+}).join(’’);
+} else {
+exHtml = ‘<div style="color:var(--muted);font-size:12px;padding:4px 0">No exercises logged</div>’;
+}
+}
+var doneBadge = w.completed ? ‘<span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--green);color:#000">✓ Done</span>’ : ‘’;
+var dow = new Date(k + ‘T12:00:00’).getDay();
+return ‘<div class="hist-entry">’ +
+‘<div class="hist-hdr" onclick="toggleHist(\'' + k + '\')">’ +
+‘<div><div style="font-family:Bebas Neue,sans-serif;font-size:20px;letter-spacing:1px;color:' + wk.color + '">’ + wk.label + ‘</div>’ +
+‘<div style="font-size:11px;color:var(--muted);margin-top:1px">’ + formatDate(k) + ’ · ’ + DAY_NAMES[dow] + ‘</div></div>’ +
+‘<div style="display:flex;align-items:center;gap:8px">’ + doneBadge +
+‘<span style="font-size:12px;color:var(--muted)">’ + (isOpen ? ‘▲’ : ‘▼’) + ‘</span></div>’ +
+‘</div>’ +
+(isOpen ? ‘<div style="padding:0 14px 12px">’ + exHtml + ‘</div>’ : ‘’) +
+‘</div>’;
+}).filter(Boolean).join(’’);
+
+return ‘<div class="sec-lbl">Personal Records</div>’ +
+‘<div class="card"><div class="card-body">’ + (prRows || ‘<div style="color:var(--muted);font-size:13px">Log weights to see PRs</div>’) + ‘</div></div>’ +
+‘<div class="sec-lbl">Workout Log</div>’ + histHtml;
+}
+
+function renderTrackBody() {
+var lat = db.body[0];
+var ph = { w: (lat && lat.weight) || 220, ch: (lat && lat.chest) || “”, wa: (lat && lat.waist) || “”, ar: (lat && lat.arms) || “”, lg: (lat && lat.legs) || “” };
+
+var progressHtml = ‘’;
+if (db.body.length >= 2) {
+var first = db.body[db.body.length - 1];
+var last = db.body[0];
+var fields = [[“weight”,“Weight”,“lbs”],[“chest”,“Chest”,“in”],[“waist”,“Waist”,“in”],[“arms”,“Arms”,“in”],[“legs”,“Legs”,“in”]];
+progressHtml = ‘<div class="sec-lbl">Progress vs First Log</div><div class="card"><div class="card-body">’ +
+fields.filter(function(f) { return first[f[0]] && last[f[0]]; }).map(function(f) {
+var diff = (last[f[0]] - first[f[0]]).toFixed(1);
+var isGood = (f[0] === “weight” || f[0] === “waist”) ? diff <= 0 : diff >= 0;
+var col = parseFloat(diff) === 0 ? “var(–muted)” : (isGood ? “var(–green)” : “var(–red)”);
+return ‘<div class="stat-row"><div style="font-size:13px;font-weight:600">’ + f[1] + ‘</div>’ +
+‘<div style="text-align:right"><div style="font-size:13px;font-weight:800;color:var(--accent)">’ + last[f[0]] + ’ ’ + f[2] + ‘</div>’ +
+‘<div style="font-size:11px;font-weight:700;color:' + col + '">’ + (parseFloat(diff) > 0 ? ‘+’ : ‘’) + diff + ’ ’ + f[2] + ‘</div></div></div>’;
+}).join(’’) +
+‘</div></div>’;
+}
+
+var histHtml = db.body.length > 0
+? ‘<div class="card"><div class="card-body">’ + db.body.slice(0, 10).map(function(b) {
+return ‘<div class="body-row">’ +
+‘<div><div style="font-size:14px;font-weight:800;color:var(--accent)">’ + b.weight + ’ lbs</div>’ +
+‘<div style="font-size:11px;color:var(--muted);margin-top:2px">’ + formatDate(b.date) + ‘</div></div>’ +
+‘<div style="font-size:11px;color:var(--muted);text-align:right;line-height:1.8">’ +
+(b.chest ? ’Chest: ’ + b.chest + ‘”<br>’ : ‘’) +
+(b.waist ? ‘Waist: ’ + b.waist + ‘”<br>’ : ‘’) +
+(b.arms  ? ‘Arms: ’  + b.arms  + ‘”’    : ‘’) +
+‘</div></div>’;
+}).join(’’) + ‘</div></div>’
+: ‘<div class="empty" style="padding:20px"><div style="font-size:13px">No measurements logged yet</div></div>’;
+
+return ‘<div class="sec-lbl">Log Today</div>’ +
+‘<div class="card"><div class="card-body">’ +
+‘<div class="form-row" style="margin-bottom:12px">’ +
+‘<div><label class="form-lbl">Weight (lbs)</label><input class="form-inp" type="number" inputmode="decimal" id="inp-weight" placeholder="' + ph.w + '"></div>’ +
+‘<div><label class="form-lbl">Chest (in)</label><input class="form-inp" type="number" inputmode="decimal" id="inp-chest" placeholder="' + ph.ch + '"></div>’ +
+‘</div>’ +
+‘<div class="form-row" style="margin-bottom:12px">’ +
+‘<div><label class="form-lbl">Waist (in)</label><input class="form-inp" type="number" inputmode="decimal" id="inp-waist" placeholder="' + ph.wa + '"></div>’ +
+‘<div><label class="form-lbl">Arms (in)</label><input class="form-inp" type="number" inputmode="decimal" id="inp-arms" placeholder="' + ph.ar + '"></div>’ +
+‘</div>’ +
+‘<div class="form-row" style="margin-bottom:14px">’ +
+‘<div><label class="form-lbl">Legs (in)</label><input class="form-inp" type="number" inputmode="decimal" id="inp-legs" placeholder="' + ph.lg + '"></div>’ +
+‘<div></div>’ +
+‘</div>’ +
+‘<button class="btn btn-accent btn-full" onclick="saveBodyStats()">Save Measurements</button>’ +
+‘</div></div>’ +
+progressHtml +
+‘<div class="sec-lbl">History</div>’ + histHtml;
+}
+
+// ── MAIN RENDER ────────────────────────────────────────────────────────────
+function render() {
+var inner = mainTab === “plan” ? renderPlan() : renderTrack();
+document.getElementById(“app”).innerHTML =
+renderHeader() +
+‘<div style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0">’ + inner + ‘</div>’ +
+‘<div class="bnav">’ +
+’<button class=“bnav-btn ’ + (mainTab === “plan” ? “on” : “”) + ‘” onclick=“switchMain('plan')”>’ +
+‘<span class="bnav-icon">💪</span>Plan’ +
+‘</button>’ +
+’<button class=“bnav-btn ’ + (mainTab === “track” ? “on” : “”) + ‘” onclick=“switchMain('track')”>’ +
+‘<span class="bnav-icon">📊</span>Track’ +
+‘</button>’ +
+‘</div>’;
+}
+
+// ── IMPORTANT: addSet and removeSet use cardIdx not exercise name ───────────
+// Exercise lookup by index
+function getExerciseByCardIdx(cardIdx) {
+var dow = todayDow();
+var workout = SCHEDULE[dow];
+if (!workout) return null;
+return workout.exercises[parseInt(cardIdx)];
+}
+
+// Override addSet/removeSet/updateSet to use index-based lookup
+var _addSet = addSet;
+var _removeSet = removeSet;
+var _updateSetWeight = updateSetWeight;
+var _updateSetReps = updateSetReps;
+
+addSet = function(cardIdx) {
+var ex = getExerciseByCardIdx(cardIdx);
+if (!ex) return;
+var w = ensureToday();
+if (!w.exercises[ex]) w.exercises[ex] = [];
+w.exercises[ex].push({ weight:””, reps:”” });
+saveDB(); render();
+};
+
+removeSet = function(cardIdx, idx) {
+var ex = getExerciseByCardIdx(cardIdx);
+if (!ex) return;
+var w = ensureToday();
+if (w.exercises[ex]) w.exercises[ex].splice(parseInt(idx), 1);
+saveDB(); render();
+};
+
+updateSetWeight = function(cardIdx, idx, val) {
+var ex = getExerciseByCardIdx(cardIdx);
+if (!ex) return;
+var w = ensureToday();
+if (!w.exercises[ex]) w.exercises[ex] = [];
+if (!w.exercises[ex][idx]) w.exercises[ex][idx] = { weight:””, reps:”” };
+w.exercises[ex][idx].weight = val === “” ? “” : parseFloat(val);
+saveDB();
+};
+
+updateSetReps = function(cardIdx, idx, val) {
+var ex = getExerciseByCardIdx(cardIdx);
+if (!ex) return;
+var w = ensureToday();
+if (!w.exercises[ex]) w.exercises[ex] = [];
+if (!w.exercises[ex][idx]) w.exercises[ex][idx] = { weight:””, reps:”” };
+w.exercises[ex][idx].reps = val === “” ? “” : parseFloat(val);
+saveDB();
+};
 
 render();
 </script>
