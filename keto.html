@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Keto Plan">
+<title>Keto + IF Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:#060A0F;color:#E8EDF5;font-family:'Outfit',system-ui,sans-serif;}
+#app{position:fixed;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;background:#060A0F;}
+#hdr{background:#0B1220;border-bottom:1px solid #1A2840;padding-top:env(safe-area-inset-top,20px);flex-shrink:0;}
+#tabs{background:#0B1220;flex-shrink:0;overflow-x:auto;}
+#content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px 20px;background:#060A0F;}
+#nav{background:#0B1220;border-top:1px solid #1A2840;padding-bottom:env(safe-area-inset-bottom,0px);display:flex;flex-shrink:0;}
+.nb{flex:1;background:none;border:none;border-top:2px solid transparent;padding:10px 4px 8px;cursor:pointer;color:#4A5568;font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.nb.on{color:#10B981;border-top-color:#10B981;}
+.nbi{font-size:20px;}
+.hi{padding:12px 16px 10px;display:flex;justify-content:space-between;align-items:flex-start;}
+.ht{font-family:'Bebas Neue',serif;font-size:26px;letter-spacing:2px;color:#10B981;}
+.hs{font-size:11px;color:#4A5568;margin-top:2px;}
+.stabs{display:flex;border-bottom:1px solid #1A2840;overflow-x:auto;}
+.st{flex:1;min-width:58px;padding:10px 4px;border:none;background:none;cursor:pointer;font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#4A5568;border-bottom:2px solid transparent;white-space:nowrap;}
+.st.on{color:#10B981;border-bottom-color:#10B981;}
+.card{background:#0B1220;border:1px solid #1A2840;border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.cbdy{padding:12px 14px;}
+.btn{border:none;border-radius:10px;font-family:inherit;font-weight:700;cursor:pointer;}
+.btn:active{opacity:.75;}
+.bfl{width:100%;padding:13px;font-size:14px;}
+.bsm{padding:6px 12px;font-size:12px;}
+.bgn{background:#10B981;color:#000;}
+.bol{background:none;border:1px solid #1A2840;color:#4A5568;}
+.seclbl{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#10B981;margin:16px 0 10px;}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #1A2840;}
+.row:last-child{border-bottom:none;}
+.badge{display:inline-block;font-size:9px;font-weight:800;padding:3px 8px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;}
+.badge-g{background:#10B981;color:#000;}
+.badge-b{background:#6366F1;color:#fff;}
+.if-countdown{font-family:'Bebas Neue',serif;font-size:52px;letter-spacing:4px;text-align:center;line-height:1;}
+.if-bar-wrap{background:#1A2840;border-radius:20px;height:6px;margin:12px 0;overflow:hidden;}
+.if-bar{height:6px;border-radius:20px;transition:width .5s;}
+.macro-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+.macro-box{background:#0B1220;border:1px solid #1A2840;border-radius:10px;padding:10px 6px;text-align:center;}
+.macro-val{font-family:'Bebas Neue',serif;font-size:22px;line-height:1;}
+.macro-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4A5568;margin-top:2px;}
+.water-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.wg{width:34px;height:34px;border-radius:8px;border:1px solid #1A2840;background:#111927;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.wg.full{background:#06B6D430;border-color:#06B6D4;}
+.meal-card{background:#0B1220;border:1px solid #1A2840;border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.meal-hdr{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.meal-nm{font-size:13px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;}
+.meal-mac{font-size:11px;color:#4A5568;font-weight:600;}
+.meal-body{padding:0 14px 12px;}
+.mi{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #1A2840;}
+.mi:last-child{border-bottom:none;}
+.mi-dot{width:6px;height:6px;border-radius:50%;background:#10B981;flex-shrink:0;margin-top:6px;}
+.time-inp{background:#111927;border:1px solid #1A2840;border-radius:8px;padding:10px 12px;font-family:inherit;font-size:16px;font-weight:700;color:#E8EDF5;outline:none;width:100%;}
+.time-inp:focus{border-color:#10B981;}
+.gblk{background:#0B1220;border:1px solid #1A2840;border-radius:12px;padding:14px;margin-bottom:10px;}
+.gtit{font-size:14px;font-weight:800;color:#E8EDF5;margin-bottom:8px;}
+.gbod{font-size:12px;color:#6B7280;line-height:1.65;}
+.grow{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid #1A2840;}
+.grow:last-child{border-bottom:none;}
+.gk{font-size:12px;font-weight:700;color:#E8EDF5;}
+.gv{font-size:12px;color:#10B981;font-weight:700;text-align:right;max-width:55%;}
+.tl-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #1A2840;}
+.tl-item:last-child{border-bottom:none;}
+.tl-wk{font-family:'Bebas Neue',serif;font-size:14px;color:#10B981;line-height:1.4;min-width:50px;}
+.gc-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #1A2840;cursor:pointer;}
+.gc-item:last-child{border-bottom:none;}
+.gc-cb{width:20px;height:20px;border-radius:6px;border:1px solid #1A2840;background:#111927;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.gc-cb.chk{background:#10B981;border-color:#10B981;color:#000;}
+.gc-txt{font-size:13px;}
+.gc-txt.chk{text-decoration:line-through;color:#4A5568;}
+.tog-row{display:flex;gap:8px;margin-bottom:14px;}
+.tog-btn{flex:1;padding:10px;border:1px solid #1A2840;border-radius:10px;background:#111927;color:#4A5568;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;}
+.tog-btn.on{background:#10B981;color:#000;border-color:#10B981;}
+.fade{animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+#errbox{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#200;border:2px solid #EF4444;border-radius:12px;padding:16px;max-width:90vw;z-index:9999;color:#EF4444;font-size:12px;word-break:break-all;}
+</style>
+</head>
+<body>
+<div id="errbox"></div>
+<div id="app">
+  <div id="hdr">
+    <div class="hi">
+      <div>
+        <div class="ht">Keto + IF Plan</div>
+        <div class="hs" id="hdr-sub">220 lbs - Strict Keto - 16:8 IF</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Bebas Neue',serif;font-size:20px;color:#F59E0B" id="hdr-day">...</div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4A5568">Today</div>
+      </div>
+    </div>
+  </div>
+  <div id="tabs"></div>
+  <div id="content"><div style="padding:20px;color:#4A5568;text-align:center;margin-top:40px">Loading...</div></div>
+  <div id="nav">
+    <button class="nb on" id="nb0" onclick="goTab(0)"><span class="nbi">&#x1F4CA;</span>Today</button>
+    <button class="nb" id="nb1" onclick="goTab(1)"><span class="nbi">&#x1F37D;&#xFE0F;</span>Meals</button>
+    <button class="nb" id="nb2" onclick="goTab(2)"><span class="nbi">&#x1F4D6;</span>Guide</button>
+    <button class="nb" id="nb3" onclick="goTab(3)"><span class="nbi">&#x1F6D2;</span>Grocery</button>
+  </div>
+</div>
+<script>
+window.onerror=function(m,s,l){var b=document.getElementById('errbox');if(b){b.style.display='block';b.textContent='Error line '+l+': '+m;}return false;};
+
+var WDM=[
+  {nm:'Break Fast',bg:'#111927',items:['4 oz ribeye steak or 3 eggs + 2 bacon','1/2 avocado','Black coffee or with 2 tbsp heavy cream'],p:38,f:44,c:2,note:'First meal - break your fast gently. Protein and fat, minimal digestive load.'},
+  {nm:'Main Meal',bg:'#0F1E14',items:['8 oz 80/20 ground beef or NY Strip','Shredded cheddar + sour cream','Roasted broccoli or spinach in butter'],p:60,f:52,c:5,note:'Largest meal of the day. Go heavy on protein here.'},
+  {nm:'Pre-Workout Fuel',bg:'#1A1500',items:['2 hard boiled eggs','1 oz macadamia nuts or 1 tbsp MCT oil','Black coffee - great clean pre-workout on keto'],p:14,f:20,c:2,note:'Light and clean. Eat 60-90 min before training. MCT oil gives immediate ketone fuel.'},
+  {nm:'Last Meal',bg:'#130D1A',items:['8 oz salmon or chicken thighs','Sauteed green beans or asparagus in butter','2 strips bacon or 1 oz cheese'],p:60,f:46,c:4,note:'Close your eating window here. Higher protein and fat supports overnight muscle repair.'}
+];
+var RDM=[
+  {nm:'Break Fast',bg:'#111927',items:['3-egg Denver omelette with ham + cheddar','Small amount of bell pepper inside','Black coffee or with heavy cream'],p:34,f:36,c:4,note:'Rest day - slightly lower calories. Still hit your protein target.'},
+  {nm:'Main Meal',bg:'#0F1E14',items:['8 oz salmon fillet','Roasted asparagus in olive oil','Large side salad with olive oil and lemon'],p:58,f:40,c:5,note:'Fatty fish on rest days adds omega-3s that reduce inflammation from training.'},
+  {nm:'Afternoon Snack',bg:'#111927',items:['2 string cheese sticks','1 oz pepperoni or beef jerky (no sugar)','10 olives or small handful of almonds'],p:20,f:18,c:2,note:'Keep it light. Rest days do not need much fuel.'},
+  {nm:'Last Meal',bg:'#130D1A',items:['8 oz ground turkey or chicken thighs','Cauliflower rice with butter and garlic','Side Caesar salad - no croutons'],p:56,f:38,c:5,note:'Taper calories toward end of window on rest days.'}
+];
+var ELEC=[
+  {n:'Sodium',tgt:'3,000-5,000 mg',tim:'All day - salt food generously',src:'Sea salt, Himalayan salt, bone broth, pickles',why:'Kidneys flush sodium on keto. Low sodium = fatigue, headaches, brain fog.'},
+  {n:'Potassium',tgt:'1,000-3,500 mg',tim:'With meals',src:'Avocado (700mg each), salmon, spinach, beef, NoSalt supplement',why:'Partners with sodium for fluid balance and muscle contractions.'},
+  {n:'Magnesium',tgt:'300-500 mg',tim:'Before bed',src:'Magnesium glycinate supplement, nuts, leafy greens',why:'Most people are already deficient. Critical for sleep, muscle recovery, and energy.'}
+];
+var SUPPS=[
+  {n:'Magnesium Glycinate',dose:'300-400mg',when:'Before bed',why:'Sleep quality, muscle recovery, reduces cramping. Non-negotiable on keto.'},
+  {n:'Electrolyte Mix (zero sugar)',dose:'1 serving',when:'Morning or pre-workout',why:'Covers sodium, potassium, magnesium in one shot.'},
+  {n:'Creatine Monohydrate',dose:'5g daily',when:'Any time - with first meal',why:'Increases strength, muscle volume, brain function. Works well on keto.'},
+  {n:'Vitamin D3 + K2',dose:'5,000 IU + 100mcg',when:'With a fat-containing meal',why:'Most people deficient. Fat-soluble. Critical for testosterone and immune function.'},
+  {n:'Omega-3 Fish Oil',dose:'2-3g EPA+DHA',when:'With a meal',why:'Anti-inflammatory. Reduces soreness. Supports heart health.'},
+  {n:'MCT Oil',dose:'1-2 tbsp',when:'In coffee or pre-workout',why:'Converts directly to ketones for immediate energy. Great fasted pre-workout fuel.'},
+  {n:'Whey Protein Isolate',dose:'1-2 scoops',when:'Post-workout or as needed',why:'Zero carb, fast-absorbing. Use isolate not concentrate.'}
+];
+var TL=[
+  {wk:'Days 1-3',title:'Carb Depletion',body:'Glycogen stores empty. Energy dips, possible headache, irritability. Normal. Salt everything. Drink water. Push through.'},
+  {wk:'Days 4-7',title:'Keto Flu Peak',body:'Worst of adaptation. Fatigue, brain fog, possible muscle cramps. Electrolytes are your solution - most keto flu is sodium deficiency. Increase salt dramatically.'},
+  {wk:'Week 2',title:'Early Fat Adaptation',body:'Energy starts stabilizing. Hunger decreases significantly. Sleep may improve. Workouts still feel hard as body relearns to fuel from fat.'},
+  {wk:'Wks 3-4',title:'Turning the Corner',body:'Noticeable energy improvement. Mental clarity increasing. Workouts feeling more normal. This is where people who pushed through start feeling great.'},
+  {wk:'Wks 4-6',title:'Fat Adapted',body:'Sustained energy throughout the day. Hunger well-controlled. Workout performance returning to baseline. Sleep quality high.'},
+  {wk:'Wk 6+',title:'Optimized',body:'Full fat adaptation. Energy stable between meals. Body composition shifting. This is sustainable long-term.'}
+];
+var DINING=[
+  {p:'Steakhouse',o:'Any cut of beef, butter and cream sauces, side salad, steamed vegetables. Skip bread and potatoes. Ask for extra butter.'},
+  {p:'Mexican',o:'Fajita meat and toppings without tortilla. Guacamole, sour cream, cheese, small amount of salsa. Skip rice, beans, chips.'},
+  {p:'Burgers',o:'Double burger no bun - protein style or knife and fork. Add cheese, bacon, avocado. Skip fries and sugary sauces.'},
+  {p:'Italian',o:'Grilled meats or fish. Caesar salad no croutons. Avoid all pasta, bread, risotto.'},
+  {p:'Asian',o:'Avoid rice, noodles, sweet sauces. Steamed protein and vegetables. Sashimi at sushi. Stir-fry with minimal or no sauce.'},
+  {p:'Fast Food',o:'Chipotle: double meat, cheese, guac, sour cream, lettuce, fajita veg - no rice or beans. Five Guys or others: burger in a bowl.'}
+];
+var SLPTIPS=[
+  {t:'Target 7-9 hours nightly',b:'At 220 lbs doing 4x weekly resistance training, you need the high end. 8 hours should be your target, not your ceiling.'},
+  {t:'Magnesium before bed',b:'300-400mg magnesium glycinate taken 30-60 min before bed dramatically improves sleep quality and increases deep sleep time.'},
+  {t:'Last meal 2-3 hours before bed',b:'Digestion disrupts sleep architecture. A gap between last meal and sleep allows proper rest cycles.'},
+  {t:'Keep room cool - around 66-68 degrees',b:'Body temperature drops during sleep. A cool room accelerates this and improves deep sleep quality significantly.'},
+  {t:'Consistent wake time is key',b:'Your wake time is more important than your bedtime. Consistent wake time anchors your circadian rhythm, controlling cortisol and growth hormone timing.'},
+  {t:'Keto improves sleep quality',b:'Blood sugar stabilization eliminates insulin crashes that cause middle-of-the-night wake-ups. Usually kicks in week 3-4.'}
+];
+var FTIPS=[
+  {t:'Coffee does not break your fast',b:'Black coffee or coffee with heavy cream has negligible insulin response. It suppresses hunger, boosts ketones, and makes fasting much easier.'},
+  {t:'Water and salt during the fast',b:'Drink plenty of water with a pinch of sea salt. Fasting on keto doubles electrolyte loss. Light-headedness during the fast is almost always low sodium.'},
+  {t:'Break your fast with protein and fat',b:'Do not break with pure carbs. On keto this is natural - eggs, steak, bacon are ideal first meals. Avoid anything that spikes insulin.'},
+  {t:'Training fasted vs fed',b:'Once fat-adapted (weeks 3-4+), fasted training works well and can increase fat oxidation. Early in adaptation, train fed.'},
+  {t:'Hunger is a wave not an emergency',b:'Hunger peaks and passes. Ghrelin adapts to your eating schedule within 2-3 weeks. Hunger mostly disappears with consistency.'},
+  {t:'Adjust window to your life',b:'16:8 is the sweet spot. Some days 14:10 is fine. Consistency over weeks matters more than perfect hours every day.'}
+];
+var GC=[
+  {cat:'Proteins',items:['80/20 Ground Beef (2-3 lbs)','NY Strip or Ribeye Steaks','Chicken Thighs (skin-on, bone-in)','Salmon Fillets','Bacon (thick cut, no sugar)','Eggs (2 dozen)','Ground Turkey','Pork Tenderloin','Beef Jerky (no sugar added)','Whey Protein Isolate']},
+  {cat:'Fats and Dairy',items:['Butter (salted)','Heavy Cream','Cream Cheese (full fat)','Shredded Cheddar','Sour Cream','Avocados (6-8)','Avocado Oil','Extra Virgin Olive Oil','MCT Oil','String Cheese','Pepperoni Slices']},
+  {cat:'Vegetables',items:['Broccoli','Spinach (fresh)','Asparagus','Zucchini','Cauliflower','Brussels Sprouts','Romaine Lettuce','Arugula','Green Beans','Cucumber','Celery','Mushrooms']},
+  {cat:'Nuts and Snacks',items:['Macadamia Nuts','Almonds (raw)','Pork Rinds (plain)','Olives (jarred)','Pickles','Sugar-Free Beef Sticks']},
+  {cat:'Pantry and Sauces',items:['Pink Himalayan Salt','Sea Salt','Hot Sauce (no sugar)','Dijon Mustard','Avocado Oil Mayo','Caesar Dressing','Bone Broth','Coconut Oil']},
+  {cat:'Supplements',items:['Magnesium Glycinate 400mg','Zero-Sugar Electrolyte Mix','Creatine Monohydrate','Vitamin D3+K2','Omega-3 Fish Oil','NoSalt or Lite Salt (potassium)']}
+];
+
+var tab=0,mlTab=0,gTab=0,openM={},grocChk={};
+var db;
+try{db=JSON.parse(localStorage.getItem('kif3')||'null')||{water:0,wd:'',ws:'12:00',we:'20:00',wt:220};}
+catch(e){db={water:0,wd:'',ws:'12:00',we:'20:00',wt:220};}
+function sv(){try{localStorage.setItem('kif3',JSON.stringify(db));}catch(e){}}
+var tIv=null;
+
+function tds(){var d=new Date(),m=('0'+(d.getMonth()+1)).slice(-2),dy=('0'+d.getDate()).slice(-2);return d.getFullYear()+'-'+m+'-'+dy;}
+function isDow(){var d=new Date().getDay();return d===1||d===2||d===4||d===5;}
+function getDayName(){return['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];}
+function t2m(t){var p=t.split(':');return parseInt(p[0])*60+parseInt(p[1]);}
+function m2t(m){var h=Math.floor(m/60)%24,mn=m%60;return('0'+h).slice(-2)+':'+('0'+mn).slice(-2);}
+function fmtC(s){var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return('0'+h).slice(-2)+':'+('0'+m).slice(-2)+':'+('0'+sec).slice(-2);}
+function getIF(){
+  var now=new Date(),cur=now.getHours()*60+now.getMinutes();
+  var st=t2m(db.ws||'12:00'),en=t2m(db.we||'20:00');
+  var tF=1440-(en-st),tE=en-st;
+  var ns=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
+  if(cur>=st&&cur<en){
+    return{open:true,sl:(en*60)-ns,pct:((cur-st)/tE)*100,col:'#10B981',lbl:'Window Closes In'};
+  } else {
+    var sl=cur<st?(st*60)-ns:((st+1440)*60)-ns;
+    var el=cur>=en?cur-en:(1440-en)+cur;
+    return{open:false,sl:sl,pct:(el/tF)*100,col:'#F59E0B',lbl:'Window Opens In'};
+  }
+}
+function getW(){if(db.wd!==tds()){db.water=0;db.wd=tds();sv();}return db.water||0;}
+function addW(i){if(db.wd!==tds()){db.water=0;db.wd=tds();}db.water=(i<(db.water||0))?i:i+1;sv();draw();}
+function getMac(){return isDow()?{cal:2300,p:190,f:162,c:20}:{cal:2050,p:185,f:140,c:15};}
+
+function draw(){
+  try{
+    var hs=document.getElementById('hdr-sub');
+    if(hs)hs.textContent=db.wt+' lbs - Strict Keto - 16:8 IF - '+getDayName();
+    var hd=document.getElementById('hdr-day');
+    if(hd)hd.innerHTML=isDow()?'Workout Day':'Rest Day';
+    if(tab===0)dDash();
+    else if(tab===1)dMeals();
+    else if(tab===2)dGuide();
+    else dGrocery();
+  }catch(err){
+    var c=document.getElementById('content');
+    if(c)c.innerHTML='<div style="padding:20px;color:#EF4444;font-size:12px">Error: '+err.message+'</div>';
+  }
+}
+function goTab(i){tab=i;for(var j=0;j<4;j++){var b=document.getElementById('nb'+j);if(b)b.className='nb'+(j===i?' on':'');}draw();}
+
+function dDash(){
+  clearInterval(tIv);
+  document.getElementById('tabs').innerHTML='';
+  var st=getIF(),w=getW(),m=getMac();
+  var fl=t2m(db.we||'20:00')-t2m(db.ws||'12:00');
+  var fh=Math.round((1440-fl)/60),eh=Math.round(fl/60);
+  var h='';
+  h+='<div class="card" style="border-color:'+(st.open?'#10B98150':'#F59E0B50')+'">';
+  h+='<div style="padding:16px 16px 14px">';
+  h+='<div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;text-align:center;color:'+st.col+';margin-bottom:4px">'+(st.open?'EATING WINDOW OPEN':'FASTING WINDOW')+' - '+fh+'h fast / '+eh+'h eat</div>';
+  h+='<div class="if-countdown" style="color:'+st.col+'" id="if-cd">'+fmtC(Math.max(0,st.sl))+'</div>';
+  h+='<div style="font-size:11px;color:#4A5568;text-align:center;margin-top:4px">'+st.lbl+' | Window: '+db.ws+' to '+db.we+'</div>';
+  h+='<div class="if-bar-wrap"><div class="if-bar" id="if-bar" style="width:'+Math.min(100,st.pct)+'%;background:'+st.col+'"></div></div>';
+  h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#4A5568"><span>Open '+db.ws+'</span><span>'+(st.open?'In window':'Fasting')+'</span><span>Close '+db.we+'</span></div>';
+  h+='</div></div>';
+  h+='<div style="margin-bottom:4px;display:flex;justify-content:space-between;align-items:center"><div class="seclbl" style="margin:0">Today\'s Macros</div><span class="badge '+(isDow()?'badge-b':'badge-g')+'">'+(isDow()?'Workout Day':'Rest Day')+'</span></div>';
+  h+='<div class="macro-grid">';
+  h+='<div class="macro-box"><div class="macro-val" style="color:#F59E0B">'+m.cal+'</div><div class="macro-lbl">Cal</div></div>';
+  h+='<div class="macro-box"><div class="macro-val" style="color:#10B981">'+m.p+'g</div><div class="macro-lbl">Protein</div></div>';
+  h+='<div class="macro-box"><div class="macro-val" style="color:#F59E0B">'+m.f+'g</div><div class="macro-lbl">Fat</div></div>';
+  h+='<div class="macro-box"><div class="macro-val" style="color:#6366F1">'+m.c+'g</div><div class="macro-lbl">Carbs</div></div>';
+  h+='</div>';
+  var tgt=Math.round(db.wt*0.5/8)+2;
+  h+='<div class="seclbl">Hydration - '+tgt+' glasses target</div>';
+  h+='<div class="card"><div class="cbdy"><div class="water-row">';
+  for(var i=0;i<tgt;i++)h+='<div class="wg'+(i<w?' full':'')+'" onclick="addW('+i+')">'+(i<w?'&#x1F4A7;':'&nbsp;')+'</div>';
+  h+='</div><div style="font-size:11px;color:#4A5568;margin-top:8px">'+w+' of '+tgt+' glasses. Tap to log. 0.5 oz per lb of body weight minimum on keto.</div></div></div>';
+  h+='<div class="seclbl">Electrolyte Checklist</div>';
+  h+='<div class="card"><div class="cbdy">';
+  h+='<div class="row"><span style="font-size:13px;font-weight:600">Sodium - salt everything</span><span style="font-size:12px;font-weight:700;color:#10B981">3-5g</span></div>';
+  h+='<div class="row"><span style="font-size:13px;font-weight:600">Potassium - avocado and fish</span><span style="font-size:12px;font-weight:700;color:#10B981">1-3.5g</span></div>';
+  h+='<div class="row"><span style="font-size:13px;font-weight:600">Magnesium - supplement nightly</span><span style="font-size:12px;font-weight:700;color:#10B981">300-500mg</span></div>';
+  h+='<div style="font-size:11px;color:#4A5568;margin-top:10px;line-height:1.5">Most keto problems are electrolyte deficiency, not carb withdrawal.</div>';
+  h+='</div></div>';
+  h+='<div class="seclbl">Adjust Eating Window</div>';
+  h+='<div class="card"><div class="cbdy"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">';
+  h+='<div><label style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#4A5568;margin-bottom:6px;display:block">Window Opens</label><input type="time" class="time-inp" id="winS" value="'+db.ws+'" onchange="setW()"></div>';
+  h+='<div><label style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#4A5568;margin-bottom:6px;display:block">Window Closes</label><input type="time" class="time-inp" id="winE" value="'+db.we+'" onchange="setW()"></div>';
+  h+='</div><div style="font-size:12px;color:#4A5568;line-height:1.6">Current: <strong style="color:#10B981">'+fh+'h fasting / '+eh+'h eating</strong>. 16:8 is the sweet spot for muscle building and fat loss.</div></div></div>';
+  var c=document.getElementById('content');
+  if(c){c.className='fade';c.innerHTML=h;}
+  tIv=setInterval(function(){
+    var s2=getIF();
+    var cd=document.getElementById('if-cd'),bar=document.getElementById('if-bar');
+    if(cd)cd.textContent=fmtC(Math.max(0,s2.sl));
+    if(bar)bar.style.width=Math.min(100,s2.pct)+'%';
+  },1000);
+}
+function setW(){var s=document.getElementById('winS'),e=document.getElementById('winE');if(s)db.ws=s.value;if(e)db.we=e.value;sv();draw();}
+
+function dMeals(){
+  clearInterval(tIv);
+  document.getElementById('tabs').innerHTML='';
+  var meals=mlTab===0?WDM:RDM;
+  var m=mlTab===0?{cal:2300,p:190,f:162,c:20}:{cal:2050,p:185,f:140,c:15};
+  var h='';
+  h+='<div class="tog-row"><button class="tog-btn'+(mlTab===0?' on':'')+'" onclick="mlTab=0;draw()">Workout Day</button><button class="tog-btn'+(mlTab===1?' on':'')+'" onclick="mlTab=1;draw()">Rest Day</button></div>';
+  h+='<div style="background:#0B1220;border:1px solid #1A2840;border-left:3px solid #10B981;border-radius:0 10px 10px 0;padding:10px 14px;margin-bottom:14px"><div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#10B981;margin-bottom:6px">Daily Targets</div><div style="display:flex;gap:16px">';
+  h+='<div><div style="font-family:Bebas Neue,serif;font-size:20px;color:#F59E0B">'+m.cal+'</div><div style="font-size:9px;color:#4A5568;text-transform:uppercase;letter-spacing:1px">Cal</div></div>';
+  h+='<div><div style="font-family:Bebas Neue,serif;font-size:20px;color:#10B981">'+m.p+'g</div><div style="font-size:9px;color:#4A5568;text-transform:uppercase;letter-spacing:1px">Protein</div></div>';
+  h+='<div><div style="font-family:Bebas Neue,serif;font-size:20px;color:#F59E0B">'+m.f+'g</div><div style="font-size:9px;color:#4A5568;text-transform:uppercase;letter-spacing:1px">Fat</div></div>';
+  h+='<div><div style="font-family:Bebas Neue,serif;font-size:20px;color:#6366F1">'+m.c+'g</div><div style="font-size:9px;color:#4A5568;text-transform:uppercase;letter-spacing:1px">Carbs</div></div>';
+  h+='</div></div>';
+  var st=t2m(db.ws||'12:00'),en=t2m(db.we||'20:00');
+  var slots=[st,st+Math.round((en-st)*0.35),st+Math.round((en-st)*0.6),en-60];
+  var slotNm=['Break Fast','Main Meal',mlTab===0?'Pre-Workout Fuel':'Afternoon Snack','Last Meal'];
+  h+='<div class="card" style="margin-bottom:14px"><div class="cbdy"><div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#4A5568;margin-bottom:10px">Meal Schedule ('+db.ws+' - '+db.we+')</div>';
+  for(var i=0;i<4;i++){h+='<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #1A2840'+(i===3?';border-bottom:none':'')+'">';h+='<div style="font-family:Bebas Neue,serif;font-size:16px;color:#10B981;min-width:46px">'+m2t(slots[i])+'</div><div style="font-size:13px;font-weight:600">'+slotNm[i]+'</div></div>';}
+  h+='</div></div>';
+  for(var i=0;i<meals.length;i++){
+    var ml=meals[i],open=!!openM[mlTab+'-'+i];
+    h+='<div class="meal-card"><div class="meal-hdr" onclick="openM['+mlTab+'-'+i+']=!openM['+mlTab+'-'+i+'];draw()">';
+    h+='<div><div class="meal-nm">'+ml.nm+'</div><div class="meal-mac">P:'+ml.p+'g  F:'+ml.f+'g  C:'+ml.c+'g</div></div>';
+    h+='<span style="font-size:12px;color:#4A5568">'+(open?'&#x25B2;':'&#x25BC;')+'</span></div>';
+    if(open){
+      h+='<div class="meal-body" style="background:'+ml.bg+'">';
+      for(var j=0;j<ml.items.length;j++)h+='<div class="mi"><div class="mi-dot"></div><div style="font-size:13px;line-height:1.4">'+ml.items[j]+'</div></div>';
+      h+='<div style="margin-top:10px;padding:10px;background:#0B1220;border-radius:8px;font-size:11px;color:#4A5568;line-height:1.5">'+ml.note+'</div></div>';
+    }
+    h+='</div>';
+  }
+  h+='<div style="background:#0B1220;border:1px solid #10B98140;border-radius:12px;padding:14px;margin-top:4px"><div style="font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#10B981;margin-bottom:6px">Protein Is Non-Negotiable</div><div style="font-size:12px;color:#6B7280;line-height:1.6">At 220 lbs targeting body recomp, you need 185-200g protein daily. Every meal should anchor around a protein source. On days you miss your eating window, prioritize protein above everything else.</div></div>';
+  var c=document.getElementById('content');
+  if(c){c.className='fade';c.innerHTML=h;}
+}
+
+function dGuide(){
+  clearInterval(tIv);
+  var gs=['Fasting','Electrolytes','Supps','Adaptation','Dining','Sleep'];
+  var th='<div class="stabs">';
+  for(var i=0;i<gs.length;i++)th+='<button class="st'+(gTab===i?' on':'')+'" onclick="gTab='+i+';draw()">'+gs[i]+'</button>';
+  th+='</div>';
+  document.getElementById('tabs').innerHTML=th;
+  var h='';
+  if(gTab===0){
+    h+='<div class="gblk" style="border-color:#F59E0B40"><div class="gtit">Why IF and Keto Work Together</div><div class="gbod">Keto alone puts you in fat-burning mode. IF amplifies it by extending periods of low insulin, maximizing fat oxidation. Together they are more effective than either alone and easier to maintain than pure calorie restriction.</div></div>';
+    h+='<div class="seclbl">What Breaks Your Fast</div>';
+    h+='<div class="card"><div class="cbdy">';
+    var fok=[['Black Coffee','Fine - zero insulin response, suppresses hunger, boosts ketones'],['Heavy Cream in Coffee','Acceptable - negligible insulin response'],['Plain Tea','Fine - any variety without sweetener'],['Water with Sea Salt','Fine and essential for electrolytes'],['Any Food','Breaks the fast - save eating for your window'],['Sweeteners','May spike insulin in some people - avoid during fast'],['Milk in Coffee','Lactose = sugar - breaks the fast']];
+    for(var i=0;i<fok.length;i++){var ok=fok[i],good=i<4,col=good?'#10B981':'#EF4444';h+='<div class="row"><span style="font-size:13px">'+ok[0]+'</span><span style="font-size:11px;color:'+col+';font-weight:600;max-width:55%;text-align:right">'+ok[1]+'</span></div>';}
+    h+='</div></div>';
+    h+='<div class="seclbl">Fasting Tips</div>';
+    for(var i=0;i<FTIPS.length;i++){var t=FTIPS[i];h+='<div class="gblk"><div class="gtit">'+t.t+'</div><div class="gbod">'+t.b+'</div></div>';}
+  } else if(gTab===1){
+    h+='<div class="seclbl">Electrolyte Protocol</div>';
+    for(var i=0;i<ELEC.length;i++){
+      var e=ELEC[i];
+      h+='<div class="gblk"><div class="gtit">'+e.n+'</div>';
+      h+='<div class="grow"><span class="gk">Daily Target</span><span class="gv">'+e.tgt+'</span></div>';
+      h+='<div class="grow"><span class="gk">Best Timing</span><span class="gv">'+e.tim+'</span></div>';
+      h+='<div class="grow"><span class="gk">Best Sources</span><span class="gv">'+e.src+'</span></div>';
+      h+='<div style="font-size:12px;color:#6B7280;line-height:1.5;margin-top:8px">'+e.why+'</div></div>';
+    }
+    h+='<div class="gblk" style="border-color:#EF444440"><div class="gtit">The Keto Flu is Not Real</div><div class="gbod">What people call keto flu is almost entirely electrolyte deficiency - specifically sodium. When you cut carbs, insulin drops, kidneys flush sodium, and potassium and magnesium follow. The fix is salting aggressively and supplementing magnesium. Most people feel dramatically better within 24-48 hours.</div></div>';
+  } else if(gTab===2){
+    h+='<div class="seclbl">Supplement Stack</div>';
+    for(var i=0;i<SUPPS.length;i++){
+      var s=SUPPS[i];
+      h+='<div class="gblk"><div class="gtit">'+s.n+' <span class="badge badge-g">'+s.dose+'</span></div><div class="grow"><span class="gk">When</span><span class="gv">'+s.when+'</span></div><div style="font-size:12px;color:#6B7280;line-height:1.5;margin-top:8px">'+s.why+'</div></div>';
+    }
+    h+='<div class="gblk"><div class="gtit">What to Avoid</div>';
+    var av=[['Pre-workouts with Dextrose/Maltodextrin','Spikes insulin'],['Most Protein Bars','Hidden sugars and maltitol'],['Flavored BCAAs','Many versions have carbs - check labels'],['Most Greens Powders','Often have fruit sugars'],['Mass Gainers','Pure sugar and carbs']];
+    for(var i=0;i<av.length;i++)h+='<div class="grow"><span class="gk">'+av[i][0]+'</span><span class="gv" style="color:#EF4444">'+av[i][1]+'</span></div>';
+    h+='</div>';
+  } else if(gTab===3){
+    h+='<div class="seclbl">Week by Week Adaptation</div>';
+    for(var i=0;i<TL.length;i++){var t=TL[i];h+='<div class="tl-item"><div class="tl-wk">'+t.wk+'</div><div><div style="font-size:13px;font-weight:700;margin-bottom:4px">'+t.title+'</div><div style="font-size:12px;color:#6B7280;line-height:1.5">'+t.body+'</div></div></div>';}
+    h+='<div class="gblk" style="border-color:#10B98140"><div class="gtit">Keto and Lifting</div><div class="gbod">You will likely lose some strength in weeks 1-3 as your body adapts. This is temporary. Your muscles are relearning to use fat and ketones instead of glycogen. Strength returns by week 4-6. Many people exceed previous lifts within 2-3 months as body composition improves and inflammation drops.</div></div>';
+    h+='<div class="seclbl">Signs You Are in Ketosis</div>';
+    var sg=[['Reduced hunger','Appetite normalizes. You stop thinking about food constantly.'],['Mental clarity','Brain fog lifts. Ketones are premium brain fuel.'],['Stable energy','No more afternoon crashes. Energy steady all day.'],['Better sleep','Blood sugar stable overnight. Wake up rested.'],['Reduced inflammation','Joints feel better. Workout recovery improves.'],['Breath change','Slightly fruity or metallic early on. Sign of ketone production.']];
+    for(var i=0;i<sg.length;i++)h+='<div class="gblk" style="padding:10px 14px"><div style="font-size:13px;font-weight:700;margin-bottom:4px">'+sg[i][0]+'</div><div style="font-size:12px;color:#6B7280;line-height:1.5">'+sg[i][1]+'</div></div>';
+  } else if(gTab===4){
+    h+='<div class="seclbl">Dining Out on Keto</div>';
+    for(var i=0;i<DINING.length;i++){var d=DINING[i];h+='<div class="gblk"><div class="gtit">'+d.p+'</div><div class="gbod">'+d.o+'</div></div>';}
+    h+='<div class="gblk" style="border-color:#6366F140"><div class="gtit">Universal Rules</div>';
+    var ru=['Substitute any starch (fries, rice, potato) with salad or extra vegetables','Any burger can go bunless - lettuce wrap or bowl','Sauces are hidden carb traps - ask on the side or skip','Olive oil and vinegar is your safest dressing anywhere','Stick to water, sparkling water, black coffee, or unsweetened tea'];
+    for(var i=0;i<ru.length;i++)h+='<div style="display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #1A2840'+(i===ru.length-1?';border-bottom:none':'')+';font-size:12px;color:#6B7280"><span style="color:#10B981;flex-shrink:0">+</span>'+ru[i]+'</div>';
+    h+='</div>';
+  } else {
+    h+='<div class="gblk" style="border-color:#6366F140"><div class="gtit">Sleep Is a Training Variable</div><div class="gbod">Muscle is not built during workouts - it is built during sleep. Growth hormone peaks in deep sleep. Cortisol (your primary fat-storing hormone) is controlled by sleep quality. One night of poor sleep can increase cortisol by 37%, promoting fat storage and muscle breakdown. Sleep is not recovery - it IS the work.</div></div>';
+    for(var i=0;i<SLPTIPS.length;i++){var s=SLPTIPS[i];h+='<div class="gblk"><div class="gtit">'+s.t+'</div><div class="gbod">'+s.b+'</div></div>';}
+  }
+  var c=document.getElementById('content');
+  if(c){c.className='fade';c.innerHTML=h;}
+}
+
+function dGrocery(){
+  clearInterval(tIv);
+  document.getElementById('tabs').innerHTML='';
+  var tot=0,chk=0;
+  for(var i=0;i<GC.length;i++){for(var j=0;j<GC[i].items.length;j++){tot++;if(grocChk[GC[i].items[j]])chk++;}}
+  var h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-size:13px;font-weight:700">'+chk+' of '+tot+' items</div><button class="btn bol bsm" onclick="grocChk={};draw()">Clear All</button></div>';
+  h+='<div style="background:#0B1220;border:1px solid #1A2840;border-radius:10px;height:6px;margin-bottom:16px;overflow:hidden"><div style="height:6px;border-radius:10px;background:#10B981;width:'+(tot>0?Math.round(chk/tot*100):0)+'%"></div></div>';
+  for(var i=0;i<GC.length;i++){
+    var cat=GC[i];
+    h+='<div class="seclbl">'+cat.cat+'</div><div class="card"><div class="cbdy">';
+    for(var j=0;j<cat.items.length;j++){
+      var item=cat.items[j],ck=!!grocChk[item],esc=item.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      h+='<div class="gc-item" onclick="grocChk[\''+esc+'\']=!grocChk[\''+esc+'\'];draw()">';
+      h+='<div class="gc-cb'+(ck?' chk':'')+'">'+( ck?'&#x2713;':'')+'</div>';
+      h+='<div class="gc-txt'+(ck?' chk':'')+'">'+item+'</div></div>';
+    }
+    h+='</div></div>';
+  }
+  var c=document.getElementById('content');
+  if(c){c.className='fade';c.innerHTML=h;}
+}
+
+draw();
+</script>
+</body>
+</html>
