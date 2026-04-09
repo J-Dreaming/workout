@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test</title>
+  <style>
+    body { background: #FAF0E4; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: Georgia, serif; }
+    .box { background: white; border-radius: 20px; padding: 2rem; text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.1); max-width: 300px; }
+    h1 { color: #C4871F; font-size: 1.8rem; margin-bottom: 0.5rem; }
+    p { color: #A08060; font-style: italic; font-size: 1rem; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: #5C7A51; display: inline-block; margin: 0.5rem 0.2rem; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>✓ It works!</h1>
+    <div><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    <p>JavaScript is running fine on this device.</p>
+    <p id="time" style="margin-top:1rem; color:#C4871F; font-size:0.8rem;"></p>
+  </div>
+  <script>
+    document.getElementById('time').textContent = 'Loaded at ' + new Date().toLocaleTimeString();
+  </script>
+</body>
+</html>
