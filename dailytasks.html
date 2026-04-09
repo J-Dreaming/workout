@@ -1,36 +1,6 @@
-<!DOCTYPE html>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Daily Walk</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}html,body{background:#FAF0E4;min-height:100vh}textarea,input{outline:none;font-family:'Raleway',sans-serif}@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}@keyframes glow{0%,100%{box-shadow:0 0 10px rgba(196,135,31,.25)}50%{box-shadow:0 0 22px rgba(196,135,31,.55)}}@keyframes shimmer{0%,100%{opacity:.4}50%{opacity:.8}}@keyframes spin{to{transform:rotate(360deg)}}.fade{animation:fadeUp .5s ease both}.glow{animation:glow 2.5s ease-in-out infinite}.pcard{animation:fadeUp .5s ease both;cursor:pointer;transition:transform .2s,box-shadow .2s}.pcard:hover{transform:translateY(-5px)}.habit-row{cursor:pointer;transition:all .2s ease}.habit-row:hover{transform:translateX(3px)}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#D4B896;border-radius:2px}</style></head><body><div id="app"></div><script>
 
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Daily Walk">
-  <title>Daily Walk</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>*{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#FAF0E4;min-height:100vh}
-textarea,input{outline:none;font-family:'Raleway',sans-serif}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes glow{0%,100%{box-shadow:0 0 10px rgba(196,135,31,.25)}50%{box-shadow:0 0 22px rgba(196,135,31,.55)}}
-@keyframes shimmer{0%,100%{opacity:.4}50%{opacity:.8}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.fade{animation:fadeUp .5s ease both}
-.glow{animation:glow 2.5s ease-in-out infinite}
-.pcard{animation:fadeUp .5s ease both;cursor:pointer;transition:transform .2s,box-shadow .2s}
-.pcard:hover{transform:translateY(-5px)}
-.habit-row{cursor:pointer;transition:all .2s ease}
-.habit-row:hover{transform:translateX(3px)}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-thumb{background:#D4B896;border-radius:2px}</style>
-</head>
-<body>
-<div id="app"></div>
-<script>
-'use strict';
+‘use strict’;
 
 // ── DATA ────────────────────────────────────────────────────────────
 const PALETTES = [[”#0D1B2A”, “#1B3A5A”, “#2A6A9A”], [”#1A0A2A”, “#3A1A5A”, “#6A3A9A”], [”#0A1A0A”, “#1A3A2A”, “#2A6A4A”], [”#1A2A00”, “#3A5A1A”, “#6A9A4A”], [”#2A0A1A”, “#5A2A3A”, “#9A5A6A”], [”#001A2A”, “#0A3A5A”, “#1A6A9A”], [”#1A1A00”, “#4A3A00”, “#8A6A1A”], [”#1A0A0A”, “#4A1A0A”, “#8A3A1A”], [”#0A0A1A”, “#1A0A4A”, “#3A1A8A”], [”#2A0A00”, “#6A2A00”, “#B25A2A”], [”#1A0A00”, “#4A2A00”, “#9A5A1A”], [”#1A0A1A”, “#3A0A3A”, “#6A2A6A”], [”#001020”, “#002040”, “#005080”], [”#001A20”, “#003A4A”, “#007A8A”], [”#000A20”, “#001A5A”, “#0A4A9A”], [”#100800”, “#2A1800”, “#5A3A1A”], [”#0C0C0C”, “#1C1C1C”, “#383018”], [”#001010”, “#003030”, “#006060”], [”#200020”, “#500050”, “#900090”], [”#200010”, “#600020”, “#B04060”], [”#200000”, “#600010”, “#C04020”], [”#201000”, “#604020”, “#C08040”], [”#101000”, “#303000”, “#706010”], [”#080818”, “#181840”, “#303080”], [”#101820”, “#203040”, “#405870”], [”#080810”, “#181828”, “#303850”], [”#001000”, “#002800”, “#005010”], [”#100010”, “#280028”, “#501050”], [”#100820”, “#281840”, “#503080”], [”#000810”, “#001828”, “#003858”]];
@@ -2822,6 +2792,4 @@ S.histLoaded=true;
 // ── START ────────────────────────────────────────────────────────────
 init();
 
-</script>
-</body>
-</html>
+</script></body></html>
