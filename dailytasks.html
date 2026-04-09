@@ -1,0 +1,815 @@
+import { useState, useEffect } from "react";
+
+const TODAY = new Date().toISOString().split("T")[0];
+const getDOY = (d) => { const n=d||new Date(),s=new Date(n.getFullYear(),0,0); return Math.floor((n-s)/86400000); };
+const safeGet = async(k) => { try{return await window.storage.get(k);}catch{return null;} };
+const safeSet = async(k,v) => { try{await window.storage.set(k,v);}catch{} };
+const greeting = () => { const h=new Date().getHours(); return h<12?"Good Morning ☀️":h<17?"Good Afternoon 🌤️":"Good Evening 🌙"; };
+
+const PALETTES=[
+  ["#0D1B2A","#1B3A5A","#2A6A9A"],["#1A0A2A","#3A1A5A","#6A3A9A"],
+  ["#0A1A0A","#1A3A2A","#2A6A4A"],["#1A2A00","#3A5A1A","#6A9A4A"],
+  ["#2A0A1A","#5A2A3A","#9A5A6A"],["#001A2A","#0A3A5A","#1A6A9A"],
+  ["#1A1A00","#4A3A00","#8A6A1A"],["#1A0A0A","#4A1A0A","#8A3A1A"],
+  ["#0A0A1A","#1A0A4A","#3A1A8A"],["#2A0A00","#6A2A00","#B25A2A"],
+  ["#1A0A00","#4A2A00","#9A5A1A"],["#1A0A1A","#3A0A3A","#6A2A6A"],
+  ["#001020","#002040","#005080"],["#001A20","#003A4A","#007A8A"],
+  ["#000A20","#001A5A","#0A4A9A"],["#100800","#2A1800","#5A3A1A"],
+  ["#0C0C0C","#1C1C1C","#383018"],["#001010","#003030","#006060"],
+  ["#200020","#500050","#900090"],["#200010","#600020","#B04060"],
+  ["#200000","#600010","#C04020"],["#201000","#604020","#C08040"],
+  ["#101000","#303000","#706010"],["#080818","#181840","#303080"],
+  ["#101820","#203040","#405870"],["#080810","#181828","#303850"],
+  ["#001000","#002800","#005010"],["#100010","#280028","#501050"],
+  ["#100820","#281840","#503080"],["#000810","#001828","#003858"],
+];
+const getBG=(doy)=>{ const[c1,c2,c3]=PALETTES[Math.abs(doy)%PALETTES.length]; return `linear-gradient(${115+(doy%12)*10}deg,${c1} 0%,${c2} 55%,${c3} 100%)`; };
+
+const CATS=[
+  {id:"spirit",label:"Spirit",icon:"✦",color:"#C4871F",bg:"rgba(196,135,31,0.07)",verse:"Matthew 6:33",habits:[
+    {id:"s1",label:"Scripture Reading",icon:"📖",desc:"Receive today's Word"},
+    {id:"s2",label:"Prayer & Communion",icon:"🙏",desc:"Intentional time with God"},
+    {id:"s3",label:"Worship",icon:"🎵",desc:"Sing, declare, or listen"},
+    {id:"s4",label:"Pray in the Spirit",icon:"◈",desc:"Yield to the Spirit's intercession"},
+    {id:"s5",label:"Written Reflection",icon:"✍",desc:"Journal what God is saying"},
+  ]},
+  {id:"body",label:"Body",icon:"💪",color:"#5C7A51",bg:"rgba(92,122,81,0.07)",verse:"1 Corinthians 6:19",habits:[
+    {id:"b1",label:"Workout / Exercise",icon:"🏋️",desc:"Honor your body as His temple"},
+    {id:"b2",label:"Walk / Movement",icon:"🚶",desc:"Get outside, breathe fresh air"},
+    {id:"b3",label:"Ate Healthy",icon:"🥗",desc:"Nourished your body well"},
+    {id:"b4",label:"Good Sleep Last Night",icon:"🌙",desc:"Rest is a gift from God"},
+  ]},
+  {id:"family",label:"Family & Others",icon:"🏠",color:"#8A4A6A",bg:"rgba(138,74,106,0.07)",verse:"Joshua 24:15",habits:[
+    {id:"f1",label:"Quality Time: Spouse",icon:"❤️",desc:"Intentional connection with your partner"},
+    {id:"f2",label:"Present with Kids",icon:"👧",desc:"Fully engaged — phones down"},
+    {id:"f3",label:"Encouraged Someone",icon:"💬",desc:"Spoke life into another person"},
+    {id:"f4",label:"Served Others",icon:"🤲",desc:"Put someone else's needs first"},
+    {id:"f5",label:"Spoke Life (No Gossip)",icon:"🌱",desc:"Let no corrupt word proceed"},
+  ]},
+  {id:"mind",label:"Mind & Growth",icon:"📚",color:"#1A4A6B",bg:"rgba(26,74,107,0.07)",verse:"Romans 12:2",habits:[
+    {id:"m1",label:"Christian Reading / Teaching",icon:"📚",desc:"Fed your spirit through study"},
+    {id:"m2",label:"Scripture Memory",icon:"🧠",desc:"Hid His Word in your heart"},
+    {id:"m3",label:"Guarded Screen Time",icon:"📵",desc:"What you behold, you become"},
+    {id:"m4",label:"Gave / Tithed / Generous",icon:"🎁",desc:"God loves a cheerful giver"},
+  ]},
+  {id:"evening",label:"Evening",icon:"🌙",color:"#355C7D",bg:"rgba(53,92,125,0.07)",verse:"Psalm 4:8",habits:[
+    {id:"e1",label:"Evening Prayer",icon:"🙏",desc:"Close the day in His presence"},
+    {id:"e2",label:"Reviewed the Day with God",icon:"🔍",desc:"What did God do today?"},
+    {id:"e3",label:"Released Offenses",icon:"🕊️",desc:"Don't let the sun go down angry"},
+    {id:"e4",label:"Prepared for Tomorrow",icon:"📋",desc:"Steward tomorrow before it comes"},
+  ]},
+];
+
+const ALL_HABITS = CATS.flatMap(c=>c.habits);
+
+const FB_S=[
+  {ref:"Psalm 46:10",ver:"NKJV",text:"Be still, and know that I am God; I will be exalted among the nations, I will be exalted in the earth!",theme:"Stillness",word:"STILL"},
+  {ref:"Jeremiah 29:11",ver:"NKJV",text:"For I know the thoughts that I think toward you, says the Lord, thoughts of peace and not of evil, to give you a future and a hope.",theme:"Hope",word:"HOPE"},
+  {ref:"Romans 5:5",ver:"TPT",text:"This hope is not a disappointing fantasy, because we can now experience the endless love of God cascading into our hearts through the Holy Spirit who lives in us!",theme:"Holy Spirit",word:"LOVE"},
+  {ref:"Isaiah 40:31",ver:"NKJV",text:"But those who wait on the Lord shall renew their strength; they shall mount up with wings like eagles, they shall run and not be weary, they shall walk and not faint.",theme:"Strength",word:"WAIT"},
+  {ref:"Psalm 23:1",ver:"NKJV",text:"The Lord is my shepherd; I shall not want.",theme:"The Shepherd",word:"ENOUGH"},
+  {ref:"Matthew 6:33",ver:"NKJV",text:"But seek first the kingdom of God and His righteousness, and all these things shall be added to you.",theme:"Seek First",word:"SEEK"},
+  {ref:"Zephaniah 3:17",ver:"NKJV",text:"The Lord your God in your midst, the Mighty One, will save; He will rejoice over you with gladness, He will quiet you with His love, He will rejoice over you with singing.",theme:"God's Delight",word:"BELOVED"},
+  {ref:"John 15:5",ver:"NKJV",text:"I am the vine, you are the branches. He who abides in Me, and I in him, bears much fruit; for without Me you can do nothing.",theme:"Abiding",word:"ABIDE"},
+  {ref:"Ephesians 3:20",ver:"TPT",text:"Never doubt God's mighty power to work in you and accomplish all this. He will achieve infinitely more than your greatest request, your most unbelievable dream, and exceed your wildest imagination!",theme:"God's Power",word:"MORE"},
+  {ref:"Hebrews 12:2",ver:"NKJV",text:"looking unto Jesus, the author and finisher of our faith, who for the joy that was set before Him endured the cross, despising the shame, and has sat down at the right hand of the throne of God.",theme:"Fix Your Eyes",word:"JESUS"},
+  {ref:"Romans 8:28",ver:"NKJV",text:"And we know that all things work together for good to those who love God, to those who are the called according to His purpose.",theme:"Sovereignty",word:"GOOD"},
+  {ref:"1 Corinthians 6:19-20",ver:"NKJV",text:"Or do you not know that your body is the temple of the Holy Spirit who is in you, whom you have from God, and you are not your own? For you were bought at a price; therefore glorify God in your body and in your spirit, which are God's.",theme:"Your Body",word:"TEMPLE"},
+  {ref:"Proverbs 22:6",ver:"NKJV",text:"Train up a child in the way he should go, and when he is old he will not depart from it.",theme:"Family",word:"TRAIN"},
+  {ref:"Colossians 3:23",ver:"NKJV",text:"And whatever you do, do it heartily, as to the Lord and not to men.",theme:"Excellence",word:"HEARTILY"},
+  {ref:"Romans 12:2",ver:"NKJV",text:"And do not be conformed to this world, but be transformed by the renewing of your mind, that you may prove what is that good and acceptable and perfect will of God.",theme:"Renew",word:"TRANSFORM"},
+  {ref:"2 Corinthians 9:7",ver:"NKJV",text:"So let each one give as he purposes in his heart, not grudgingly or of necessity; for God loves a cheerful giver.",theme:"Generosity",word:"GIVE"},
+  {ref:"Psalm 4:8",ver:"NKJV",text:"I will both lie down in peace, and sleep; for You alone, O Lord, make me dwell in safety.",theme:"Rest",word:"PEACE"},
+  {ref:"Proverbs 3:5-6",ver:"NKJV",text:"Trust in the Lord with all your heart, and lean not on your own understanding; in all your ways acknowledge Him, and He shall direct your paths.",theme:"Trust",word:"TRUST"},
+  {ref:"Lamentations 3:22-23",ver:"NKJV",text:"Through the Lord's mercies we are not consumed, because His compassions fail not. They are new every morning; great is Your faithfulness.",theme:"New Mercies",word:"NEW"},
+  {ref:"Ephesians 4:26",ver:"NKJV",text:"Be angry, and do not sin: do not let the sun go down on your wrath.",theme:"Evening Peace",word:"RELEASE"},
+  {ref:"Psalm 127:1",ver:"NKJV",text:"Unless the Lord builds the house, they labor in vain who build it; unless the Lord guards the city, the watchman stays awake in vain.",theme:"Dependence",word:"BUILD"},
+  {ref:"1 Peter 4:10",ver:"NKJV",text:"As each one has received a gift, minister it to one another, as good stewards of the manifold grace of God.",theme:"Stewardship",word:"SERVE"},
+  {ref:"Joshua 1:9",ver:"NKJV",text:"Have I not commanded you? Be strong and of good courage; do not be afraid, nor be dismayed, for the Lord your God is with you wherever you go.",theme:"Courage",word:"COURAGE"},
+  {ref:"Galatians 5:22-23",ver:"NKJV",text:"But the fruit of the Spirit is love, joy, peace, longsuffering, kindness, goodness, faithfulness, gentleness, self-control. Against such there is no law.",theme:"The Fruit",word:"FRUIT"},
+  {ref:"Psalm 34:8",ver:"NKJV",text:"Oh, taste and see that the Lord is good; blessed is the man who trusts in Him!",theme:"God's Goodness",word:"TASTE"},
+  {ref:"Nehemiah 8:10",ver:"NKJV",text:"Do not sorrow, for the joy of the Lord is your strength.",theme:"Joy",word:"JOY"},
+  {ref:"Isaiah 43:1",ver:"NKJV",text:"Fear not, for I have redeemed you; I have called you by your name; you are Mine.",theme:"Identity",word:"MINE"},
+  {ref:"Philippians 4:11",ver:"NKJV",text:"I have learned, in whatever state I am, to be content.",theme:"Contentment",word:"CONTENT"},
+  {ref:"2 Timothy 1:7",ver:"NKJV",text:"For God has not given us a spirit of fear, but of power and of love and of a sound mind.",theme:"Power & Love",word:"POWER"},
+  {ref:"John 10:10",ver:"NKJV",text:"I have come that they may have life, and that they may have it more abundantly.",theme:"Abundant Life",word:"LIFE"},
+  {ref:"Psalm 16:11",ver:"NKJV",text:"You will show me the path of life; in Your presence is fullness of joy; at Your right hand are pleasures forevermore.",theme:"His Presence",word:"PRESENCE"},
+  {ref:"1 Thessalonians 5:16-18",ver:"NKJV",text:"Rejoice always, pray without ceasing, in everything give thanks; for this is the will of God in Christ Jesus for you.",theme:"Always",word:"ALWAYS"},
+  {ref:"Psalm 139:14",ver:"NKJV",text:"I will praise You, for I am fearfully and wonderfully made; marvelous are Your works, and that my soul knows very well.",theme:"Wonderfully Made",word:"WONDER"},
+  {ref:"Micah 6:8",ver:"NKJV",text:"He has shown you, O man, what is good; and what does the Lord require of you but to do justly, to love mercy, and to walk humbly with your God?",theme:"Simple Obedience",word:"WALK"},
+  {ref:"Numbers 6:24-26",ver:"NKJV",text:"The Lord bless you and keep you; the Lord make His face shine upon you, and be gracious to you; the Lord lift up His countenance upon you, and give you peace.",theme:"The Blessing",word:"BLESSED"},
+  {ref:"Psalm 91:1",ver:"TPT",text:"When you sit enthroned under the shadow of Shaddai, you are hidden in the strength of God Most High.",theme:"Shelter",word:"HIDDEN"},
+  {ref:"Romans 15:13",ver:"NKJV",text:"Now may the God of hope fill you with all joy and peace in believing, that you may abound in hope by the power of the Holy Spirit.",theme:"Abounding Hope",word:"ABOUND"},
+  {ref:"Ephesians 6:10",ver:"NKJV",text:"Finally, my brethren, be strong in the Lord and in the power of His might.",theme:"Strong",word:"STRONG"},
+  {ref:"James 1:5",ver:"NKJV",text:"If any of you lacks wisdom, let him ask of God, who gives to all liberally and without reproach, and it will be given to him.",theme:"Wisdom",word:"ASK"},
+  {ref:"Isaiah 26:3",ver:"NKJV",text:"You will keep him in perfect peace, whose mind is stayed on You, because he trusts in You.",theme:"Perfect Peace",word:"MIND"},
+  {ref:"Psalm 37:4",ver:"NKJV",text:"Delight yourself also in the Lord, and He shall give you the desires of your heart.",theme:"Delight",word:"DELIGHT"},
+  {ref:"1 John 4:4",ver:"NKJV",text:"You are of God, little children, and have overcome them, because He who is in you is greater than he who is in the world.",theme:"Greater One",word:"OVERCOME"},
+  {ref:"Philippians 4:6-7",ver:"NKJV",text:"Be anxious for nothing, but in everything by prayer and supplication, with thanksgiving, let your requests be made known to God; and the peace of God, which surpasses all understanding, will guard your hearts and minds through Christ Jesus.",theme:"No Anxiety",word:"GUARD"},
+  {ref:"Matthew 5:16",ver:"NKJV",text:"Let your light so shine before men, that they may see your good works and glorify your Father in heaven.",theme:"Shine",word:"SHINE"},
+  {ref:"Hebrews 10:24",ver:"NKJV",text:"And let us consider one another in order to stir up love and good works.",theme:"Community",word:"STIR"},
+  {ref:"Romans 8:1",ver:"NKJV",text:"There is therefore now no condemnation to those who are in Christ Jesus, who do not walk according to the flesh, but according to the Spirit.",theme:"Freedom",word:"FREE"},
+  {ref:"Psalm 103:2",ver:"NKJV",text:"Bless the Lord, O my soul, and forget not all His benefits.",theme:"Remember",word:"FORGET NOT"},
+  {ref:"2 Corinthians 5:17",ver:"NKJV",text:"Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.",theme:"New Creation",word:"NEW"},
+  {ref:"Isaiah 40:29",ver:"NKJV",text:"He gives power to the weak, and to those who have no might He increases strength.",theme:"Strengthened",word:"POWER"},
+  {ref:"Revelation 3:20",ver:"NKJV",text:"Behold, I stand at the door and knock. If anyone hears My voice and opens the door, I will come in to him and dine with him, and he with Me.",theme:"Intimacy",word:"OPEN"},
+];
+
+const FB_Q=[
+  {q:"Worship is not the preparation for the work. Worship is the work.",a:"A.W. Tozer"},
+  {q:"I am not moved by what I see. I am not moved by what I feel. I am moved only by what I believe.",a:"Smith Wigglesworth"},
+  {q:"If you don't learn to pray in ordinary moments, you'll find praying in difficult ones nearly impossible.",a:"Bill Johnson"},
+  {q:"We are as near to God as we desire to be.",a:"Andrew Murray"},
+  {q:"God's presence is not something you earn. It is something you receive.",a:"Heidi Baker"},
+  {q:"The spiritual man is not one who has occasional feelings about God. He is the one whose whole life is mastered by the Spirit.",a:"Watchman Nee"},
+  {q:"Faith is not a feeling. Faith is acting on what you know to be true in God's Word.",a:"Kenneth Hagin"},
+  {q:"Intimacy with God is not a reward for the spiritually elite. It's a gift for the spiritually hungry.",a:"Bill Johnson"},
+  {q:"He is no fool who gives what he cannot keep to gain what he cannot lose.",a:"Jim Elliot"},
+  {q:"Prayer is not preparation for the battle. Prayer is the battle.",a:"Oswald Chambers"},
+  {q:"There is nothing in your past that can disqualify you from God's future.",a:"Danny Silk"},
+  {q:"Your hunger for God is His invitation to you.",a:"Bill Johnson"},
+  {q:"Worship shifts the atmosphere. It shifts you first.",a:"Darlene Zschech"},
+  {q:"Hope is a confident expectation of good, anchored in the character of God.",a:"Bill Johnson"},
+  {q:"You are loved not because of who you are, but because of who He is.",a:"Andrew Wommack"},
+  {q:"The life of God in you is stronger than anything that tries to come against you.",a:"Keith Moore"},
+  {q:"Love always looks like something. It looks like feeding the poor, caring for the sick, showing up.",a:"Heidi Baker"},
+  {q:"When you realize how loved you are, everything changes.",a:"Danny Silk"},
+  {q:"The goodness of God is the most powerful force in the universe.",a:"Andrew Wommack"},
+  {q:"Thanksgiving is the first language of the Kingdom.",a:"Graham Cooke"},
+  {q:"The Holy Spirit is not a doctrine. He is a Person who wants to be known.",a:"Michael Koulianos"},
+  {q:"There is no limit to what God can do through a life fully surrendered.",a:"Smith Wigglesworth"},
+  {q:"Joy is the serious business of heaven.",a:"C.S. Lewis"},
+  {q:"Never be afraid to trust an unknown future to a known God.",a:"Corrie ten Boom"},
+  {q:"I have held many things in my hands, and I have lost them all; but whatever I have placed in God's hands, that I still possess.",a:"Martin Luther"},
+  {q:"The measure of your prayer life is the measure of your spiritual life.",a:"Leonard Ravenhill"},
+  {q:"Being filled with the Spirit is not a one-time experience — it's a daily, continuous yielding.",a:"Jack Hayford"},
+  {q:"There are no ordinary people. You have never talked to a mere mortal.",a:"C.S. Lewis"},
+  {q:"Revival is not something God is waiting to give. He gave it. His name is Holy Spirit.",a:"Bill Johnson"},
+  {q:"God's love for you is not based on your performance — it is based on His nature.",a:"Andrew Murray"},
+  {q:"When we spend time in His presence, we begin to think His thoughts.",a:"Heidi Baker"},
+  {q:"Heaven is the resource we draw from to transform the earth.",a:"Bill Johnson"},
+  {q:"Don't talk to God about your mountain. Talk to your mountain about God.",a:"Smith Wigglesworth"},
+  {q:"There is a place in God where sorrow and joy are one.",a:"Graham Cooke"},
+  {q:"The Holy Spirit does not just visit — He indwells. He is at home in you.",a:"Smith Wigglesworth"},
+  {q:"God does not give us overcoming life; He gives us life as we overcome.",a:"Oswald Chambers"},
+  {q:"In my deepest wound I saw Your glory, and it dazzled me.",a:"Augustine of Hippo"},
+  {q:"We are invited, not obligated — and that is grace.",a:"Andrew Murray"},
+  {q:"In prayer it is better to have a heart without words than words without a heart.",a:"John Bunyan"},
+  {q:"God doesn't just want to fix your situation. He wants to transform your heart.",a:"Kris Vallotton"},
+  {q:"He who has learned to pray has learned the greatest secret of a holy and happy life.",a:"William Law"},
+  {q:"When you abide in Him, fruitfulness is inevitable.",a:"Andrew Murray"},
+  {q:"The greatest miracle is not what God can do for you — it is what He has made you.",a:"Watchman Nee"},
+  {q:"Before you can learn to trust God, you must first learn to know Him.",a:"Watchman Nee"},
+  {q:"Pray, and let God worry.",a:"Martin Luther"},
+  {q:"Faith does not operate in the realm of the possible. There is no glory for God in that which is humanly possible.",a:"Oswald Chambers"},
+  {q:"God never gives strength for tomorrow, or for the next hour, but only for the strain of the minute.",a:"Oswald Chambers"},
+  {q:"When you see what God sees, you begin to feel what God feels.",a:"Heidi Baker"},
+  {q:"You will never fall short of God's ability to redeem, restore, and renew.",a:"Danny Silk"},
+  {q:"The Word of God is not just information to fill your mind. It is seed to transform your life.",a:"Andrew Wommack"},
+];
+
+const FULL_DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const SHORT_DAYS=["Su","Mo","Tu","We","Th","Fr","Sa"];
+
+// ─── WATER TRACKER ──────────────────────────────────────────
+function WaterTracker({count,onChange}){
+  return(
+    <div style={{marginTop:"0.6rem"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"0.4rem"}}>
+        <div style={{display:"flex",alignItems:"center",gap:"0.5rem"}}>
+          <span style={{fontSize:"1rem"}}>💧</span>
+          <span style={{fontFamily:"'Raleway',sans-serif",fontSize:"0.85rem",fontWeight:500,color:"#1C1008"}}>Water Intake</span>
+        </div>
+        <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"0.9rem",color:"#1A4A6B",fontWeight:600}}>{count}/8 glasses</span>
+      </div>
+      <div style={{display:"flex",gap:"5px"}}>
+        {Array.from({length:8},(_,i)=>(
+          <div key={i} onClick={()=>onChange(i<count?i:i+1)}
+            style={{flex:1,aspectRatio:"1",borderRadius:"50%",background:i<count?"#1A4A6B":"rgba(26,74,107,0.12)",border:`2px solid ${i<count?"#1A6A9A":"#C4D9E8"}`,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.2s",fontSize:"0.6rem"}}>
+            {i<count&&<span style={{color:"white"}}>●</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── HISTORY ENTRY ───────────────────────────────────────────
+function HistoryEntry({date,data,scripture,bg,expanded,onToggle}){
+  const d=new Date(date+"T12:00:00");
+  const label=`${FULL_DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  const total=ALL_HABITS.filter(h=>data.tasks?.[h.id]).length;
+  const hasContent=data.notes||data.meditation||data.gratitude?.some(g=>g)||data.prayers?.length>0||total>0;
+  if(!hasContent)return null;
+  return(
+    <div style={{marginBottom:"0.55rem",borderRadius:"10px",border:"1px solid #EDE0CD",overflow:"hidden",background:"rgba(255,255,255,0.65)"}}>
+      <div onClick={onToggle} style={{padding:"0.7rem 1rem",display:"flex",alignItems:"center",gap:"0.65rem",cursor:"pointer"}}>
+        <div style={{width:"8px",height:"8px",borderRadius:"50%",background:data.completed?"#5C7A51":"#C4A882",flexShrink:0}}/>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontFamily:"'Raleway',sans-serif",fontSize:"0.78rem",fontWeight:600,color:"#1C1008"}}>{label}</div>
+          <div style={{fontSize:"0.62rem",color:"#A08060",marginTop:"0.1rem"}}>{total}/{ALL_HABITS.length} habits · {scripture?.ref||""}</div>
+        </div>
+        <span style={{color:"#C4A882",fontSize:"0.8rem",flexShrink:0}}>{expanded?"▲":"▼"}</span>
+      </div>
+      {expanded&&(
+        <div style={{padding:"0 1rem 1rem",borderTop:"1px solid #EDE0CD"}}>
+          {scripture&&(
+            <div style={{padding:"0.8rem",background:bg,borderRadius:"8px",margin:"0.7rem 0",position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 70%,rgba(255,255,255,0.1) 0%,transparent 70%)"}}/>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontSize:"0.95rem",color:"rgba(255,255,255,0.92)",lineHeight:1.55,marginBottom:"0.4rem",position:"relative"}}>"{scripture.text}"</div>
+              <div style={{fontSize:"0.6rem",letterSpacing:"0.12em",textTransform:"uppercase",color:"rgba(255,255,255,0.65)",fontWeight:600,position:"relative"}}>{scripture.ref}</div>
+            </div>
+          )}
+          {CATS.map(cat=>{
+            const done=cat.habits.filter(h=>data.tasks?.[h.id]);
+            if(!done.length)return null;
+            return(
+              <div key={cat.id} style={{marginBottom:"0.65rem"}}>
+                <div style={{fontSize:"0.6rem",letterSpacing:"0.12em",textTransform:"uppercase",color:cat.color,fontWeight:600,marginBottom:"0.3rem",fontFamily:"'Raleway',sans-serif"}}>{cat.icon} {cat.label}</div>
+                {done.map(h=><div key={h.id} style={{fontSize:"0.78rem",color:"#5C7A51",marginBottom:"0.15rem",fontFamily:"'Raleway',sans-serif"}}><span style={{marginRight:"0.35rem"}}>✓</span>{h.label}</div>)}
+              </div>
+            );
+          })}
+          {data.water>0&&<div style={{fontSize:"0.78rem",color:"#1A4A6B",marginBottom:"0.65rem",fontFamily:"'Raleway',sans-serif"}}>💧 Water: {data.water}/8 glasses</div>}
+          {data.gratitude?.some(g=>g)&&(
+            <div style={{marginBottom:"0.65rem"}}>
+              <div style={HS.lbl}>Thanksgivings</div>
+              {data.gratitude.filter(g=>g).map((g,i)=><div key={i} style={HS.line}>{i+1}. {g}</div>)}
+            </div>
+          )}
+          {data.meditation&&<div style={{marginBottom:"0.65rem"}}><div style={HS.lbl}>Scripture Meditation</div><div style={HS.para}>{data.meditation}</div></div>}
+          {data.notes&&<div style={{marginBottom:"0.65rem"}}><div style={HS.lbl}>Revelations & Notes</div><div style={HS.para}>{data.notes}</div></div>}
+          {data.prayers?.length>0&&(
+            <div><div style={HS.lbl}>Prayer Intentions</div>
+              {data.prayers.map((p,i)=>(
+                <div key={i} style={{...HS.line,textDecoration:p.done?"line-through":"none",opacity:p.done?0.5:1}}>
+                  <span style={{marginRight:"0.4rem",color:p.done?"#5C7A51":"#C4A882"}}>{p.done?"✓":"○"}</span>{p.text}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+const HS={
+  lbl:{fontSize:"0.58rem",letterSpacing:"0.14em",textTransform:"uppercase",color:"#C4871F",fontWeight:600,marginBottom:"0.3rem",fontFamily:"'Raleway',sans-serif"},
+  line:{fontSize:"0.8rem",color:"#1C1008",marginBottom:"0.22rem",fontFamily:"'Raleway',sans-serif",lineHeight:1.4},
+  para:{fontFamily:"'Raleway',sans-serif",fontSize:"0.82rem",color:"#1C1008",lineHeight:1.65,whiteSpace:"pre-wrap"},
+};
+
+// ─── MAIN APP ────────────────────────────────────────────────
+const PROFILES=[
+  {name:"Joshua",color:"#C4871F",grad:"linear-gradient(145deg,#1A1200,#4A3000,#B8860B)",icon:"✝",tag:"Walk humbly with your God  · Micah 6:8"},
+  {name:"Nicole",color:"#8A4A6A",grad:"linear-gradient(145deg,#1A0010,#5A1A3A,#8A4A6A)",icon:"✦",tag:"Clothed with strength & dignity  · Prov 31:25"},
+];
+
+function ProfilePicker({onSelect}){
+  const h=new Date().getHours();
+  const g=h<12?"Good Morning":h<17?"Good Afternoon":"Good Evening";
+  return(
+    <div style={{minHeight:"100vh",background:"#FAF0E4",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"2rem 1.5rem",fontFamily:"'Raleway',sans-serif"}}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.pcard{animation:fadeUp 0.5s ease both;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}.pcard:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(28,16,8,0.16)!important}`}</style>
+      <div style={{marginBottom:"2.25rem",textAlign:"center",animation:"fadeUp 0.4s ease both"}}>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"0.7rem",letterSpacing:"0.28em",textTransform:"uppercase",color:"#C4A882",marginBottom:"0.6rem"}}>Daily Walk</div>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"2.4rem",fontWeight:300,color:"#1C1008",letterSpacing:"-0.02em",lineHeight:1.1}}>{g}</div>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontSize:"1.05rem",color:"#A08060",marginTop:"0.5rem"}}>Who is walking with God today?</div>
+      </div>
+      <div style={{display:"flex",gap:"1rem",width:"100%",maxWidth:"420px"}}>
+        {PROFILES.map((p,i)=>(
+          <div key={p.name} className="pcard" onClick={()=>onSelect(p.name)}
+            style={{flex:1,borderRadius:"18px",overflow:"hidden",boxShadow:"0 8px 28px rgba(28,16,8,0.12)",animationDelay:`${i*0.1}s`}}>
+            <div style={{height:"150px",background:p.grad,position:"relative",display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 65%,rgba(255,255,255,0.14) 0%,transparent 70%)"}}/>
+              <div style={{position:"absolute",top:"-40px",left:"-40px",width:"130px",height:"130px",borderRadius:"50%",border:"1px solid rgba(255,255,255,0.07)"}}/>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"3.2rem",color:"rgba(255,255,255,0.92)",position:"relative"}}>{p.icon}</div>
+            </div>
+            <div style={{padding:"1rem 0.75rem 1.1rem",background:"white",textAlign:"center"}}>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"1.5rem",fontWeight:600,color:"#1C1008",marginBottom:"0.35rem"}}>{p.name}</div>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontSize:"0.7rem",color:"#A08060",lineHeight:1.45}}>{p.tag}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{marginTop:"2.5rem",textAlign:"center",animation:"fadeUp 0.5s ease 0.25s both"}}>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontSize:"0.88rem",color:"#C4A882"}}>"As for me and my house, we will serve the Lord"</div>
+        <div style={{fontSize:"0.58rem",letterSpacing:"0.18em",textTransform:"uppercase",color:"#D4B896",marginTop:"0.3rem"}}>Joshua 24:15</div>
+      </div>
+    </div>
+  );
+}
+
+function DailyTracker({profile,onSwitch}){
+  const K=(key)=>`p:${profile}:${key}`;
+  const doy=getDOY();
+  const now=new Date();
+  const dateLabel=`${FULL_DAYS[now.getDay()]}, ${MONTHS[now.getMonth()]} ${now.getDate()}`;
+  const bg=getBG(doy);
+
+  const [content,setContent]=useState(null);
+  const [contentLoading,setCL]=useState(true);
+  const [streak,setStreak]=useState(0);
+  const [dayData,setDayData]=useState({tasks:{},notes:"",meditation:"",prayers:[],gratitude:["","",""],water:0,completed:false});
+  const [memVerse,setMemVerse]=useState("");
+  const [newPrayer,setNewPrayer]=useState("");
+  const [completedDays,setCD]=useState([]);
+  const [appLoaded,setAppLoaded]=useState(false);
+  const [done,setDone]=useState(false);
+  const [activeTab,setActiveTab]=useState("today");
+  const [openCats,setOpenCats]=useState({spirit:true,body:true,family:false,mind:false,evening:false});
+  const [histEntries,setHistEntries]=useState([]);
+  const [histLoaded,setHistLoaded]=useState(false);
+  const [expanded,setExpanded]=useState(null);
+
+  useEffect(()=>{
+    (async()=>{
+      const[s,td,cd,mv]=await Promise.all([safeGet(K("dev:streak")),safeGet(K(`dev:day:${TODAY}`)),safeGet(K("dev:completed")),safeGet(K("dev:memverse"))]);
+      if(s){const sv=JSON.parse(s.value);const yest=new Date();yest.setDate(yest.getDate()-1);const y=yest.toISOString().split("T")[0];if(sv.last===TODAY||sv.last===y)setStreak(sv.count);}
+      if(td){const p=JSON.parse(td.value);setDayData(p);if(p.completed)setDone(true);}
+      if(cd)setCD(JSON.parse(cd.value));
+      if(mv)setMemVerse(mv.value);
+      setAppLoaded(true);
+    })();
+  },[]);
+
+  useEffect(()=>{loadContent();},[]);
+
+  const loadContent=async()=>{
+    const cKey=`dev:content:${doy}`;
+    const cached=await safeGet(cKey);
+    if(cached){setContent(JSON.parse(cached.value));setCL(false);return;}
+    try{
+      const res=await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          model:"claude-sonnet-4-20250514",max_tokens:700,
+          messages:[{role:"user",content:`You create daily content for a Christian full-day life tracker app used by the wife of a Spirit-filled charismatic pastor. The app tracks Spirit (prayer, scripture, worship), Body (health, exercise, sleep), Family (spouse, kids, encouragement), Mind (reading, memory, screens), and Evening (review, forgiveness, preparation).
+
+Day ${doy} of ${now.getFullYear()} — ${MONTHS[now.getMonth()]} ${now.getDate()}.
+
+Generate:
+1. A scripture verse fitting for DAILY CHRISTIAN LIFE (not just devotions). Draw from all of Scripture — consider verses about the body, work, family, stewardship, rest, relationships, mind renewal, generosity, service. Use NKJV ~70%, Passion Translation ~30%.
+
+2. A single FOCUS WORD (1-3 words max) derived from the verse — something to carry as a meditation through the whole day.
+
+3. A quote from a Spirit-filled Christian author. Prefer: Smith Wigglesworth, Andrew Murray, Bill Johnson, Heidi Baker, Watchman Nee, A.W. Tozer, Kenneth Hagin, Andrew Wommack, Keith Moore, Danny Silk, Graham Cooke, Oswald Chambers, Leonard Ravenhill, Corrie ten Boom, E.M. Bounds, John G. Lake, Michael Koulianos, Kris Vallotton, Darlene Zschech.
+
+Return ONLY valid JSON with no markdown, no backticks:
+{"ref":"Book Chapter:Verse","ver":"NKJV","text":"Exact scripture text","theme":"Two word theme","word":"FOCUS WORD","quote":"Quote text","author":"Author Name"}`}]
+        })
+      });
+      const data=await res.json();
+      const raw=data.content?.find(b=>b.type==="text")?.text||"";
+      const parsed=JSON.parse(raw.replace(/```json|```/g,"").trim());
+      await safeSet(cKey,JSON.stringify(parsed));
+      setContent(parsed);
+    }catch(e){
+      const fb=FB_S[doy%FB_S.length];
+      const fq=FB_Q[doy%FB_Q.length];
+      setContent({...fb,quote:fq.q,author:fq.a});
+    }
+    setCL(false);
+  };
+
+  const saveDay=async(nd)=>{await safeSet(K(`dev:day:${TODAY}`),JSON.stringify(nd));};
+  const update=(updates)=>{setDayData(prev=>{const next={...prev,...updates};saveDay(next);return next;});};
+  const toggleTask=(id)=>update({tasks:{...dayData.tasks,[id]:!dayData.tasks[id]}});
+  const addPrayer=()=>{if(!newPrayer.trim())return;const prayers=[...dayData.prayers,{text:newPrayer.trim(),done:false}];update({prayers});setNewPrayer("");};
+
+  const completeDayFn=async()=>{
+    if(done)return;
+    const yest=new Date();yest.setDate(yest.getDate()-1);const y=yest.toISOString().split("T")[0];
+    let nc=1;const s=await safeGet(K("dev:streak"));
+    if(s){const sv=JSON.parse(s.value);if(sv.last===y)nc=sv.count+1;else if(sv.last===TODAY)nc=sv.count;}
+    await safeSet(K("dev:streak"),JSON.stringify({count:nc,last:TODAY}));
+    const ncd=[...new Set([...completedDays,TODAY])].slice(-365);
+    setCD(ncd);await safeSet(K("dev:completed"),JSON.stringify(ncd));
+    update({completed:true});setStreak(nc);setDone(true);
+  };
+
+  const getDOYForDate=(ds)=>{const d=new Date(ds+"T12:00:00"),s=new Date(d.getFullYear(),0,0);return Math.floor((d-s)/86400000);};
+
+  useEffect(()=>{if(activeTab==="history"&&!histLoaded)loadHistory();},[activeTab]);
+  const loadHistory=async()=>{
+    try{
+      const keys=await window.storage.list(K("dev:day:"));
+      if(!keys?.keys?.length){setHistLoaded(true);return;}
+      const pfxStr=K("dev:day:");
+      const loaded=await Promise.all(keys.keys.sort((a,b)=>b.localeCompare(a)).slice(0,120).map(async key=>{
+        const ds=key.replace(pfxStr,"");
+        const[dd,cd2]=await Promise.all([safeGet(key),safeGet(`dev:content:${getDOYForDate(ds)}`)]);
+        return{date:ds,data:dd?JSON.parse(dd.value):{},scripture:cd2?JSON.parse(cd2.value):null};
+      }));
+      setHistEntries(loaded.filter(e=>e.data&&(e.data.notes||e.data.meditation||e.data.prayers?.length>0||e.data.gratitude?.some(g=>g)||ALL_HABITS.some(h=>e.data.tasks?.[h.id]))));
+    }catch(e){}
+    setHistLoaded(true);
+  };
+
+  const totalDone=ALL_HABITS.filter(h=>dayData.tasks[h.id]).length;
+  const totalHabits=ALL_HABITS.length;
+  const pct=(totalDone/totalHabits)*100;
+  const last28=Array.from({length:28},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(27-i));return d.toISOString().split("T")[0];});
+
+  if(!appLoaded)return(
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:"#FAF0E4",fontFamily:"Georgia,serif",color:"#A08060",flexDirection:"column",gap:"1rem"}}>
+      <div style={{fontSize:"2rem",animation:"spin 3s linear infinite"}}>✦</div>
+      <div style={{fontSize:"0.75rem",letterSpacing:"0.2em",textTransform:"uppercase"}}>Loading your day...</div>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  );
+
+  return(
+    <div style={{fontFamily:"'Raleway',sans-serif",background:"#FAF0E4",minHeight:"100vh",maxWidth:"480px",margin:"0 auto",paddingBottom:"3rem"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600;700&display=swap');
+        *{box-sizing:border-box;margin:0;padding:0}
+        textarea,input{outline:none}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#D4B896;border-radius:2px}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes glow{0%,100%{box-shadow:0 0 10px rgba(196,135,31,0.25)}50%{box-shadow:0 0 22px rgba(196,135,31,0.55)}}
+        @keyframes shimmer{0%,100%{opacity:0.4}50%{opacity:0.8}}
+        .fade{animation:fadeUp 0.5s ease both}
+        .glow{animation:glow 2.5s ease-in-out infinite}
+        .habit-row:hover{transform:translateX(3px)}
+        .sk{animation:shimmer 1.8s ease-in-out infinite;border-radius:4px;background:#EDE0CD}
+      `}</style>
+
+      {/* HEADER */}
+      <header style={{padding:"1.75rem 1.5rem 0.5rem",display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+        <div>
+          <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"1.9rem",fontWeight:300,color:"#1C1008",letterSpacing:"-0.02em",lineHeight:1.1}}>{greeting()}, {profile} ✨</div>
+          <div style={{fontSize:"0.68rem",letterSpacing:"0.18em",textTransform:"uppercase",color:"#A08060",marginTop:"0.35rem"}}>{dateLabel}</div>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:"0.4rem"}}>
+          <div className="glow" style={{background:streak>0?"linear-gradient(135deg,#C4871F,#E8A840)":"#C4B099",borderRadius:"14px",padding:"0.6rem 0.85rem",color:"white",textAlign:"center",minWidth:"58px"}}>
+            <div style={{fontSize:"1.1rem",lineHeight:1}}>🔥</div>
+            <div style={{fontSize:"1.4rem",fontWeight:700,lineHeight:1.1,fontFamily:"'Cormorant Garamond',serif"}}>{streak}</div>
+            <div style={{fontSize:"0.48rem",letterSpacing:"0.12em",textTransform:"uppercase",opacity:0.85}}>day streak</div>
+          </div>
+          <button onClick={onSwitch} style={{fontSize:"0.58rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#C4A882",background:"rgba(255,255,255,0.6)",border:"1px solid #EDE0CD",borderRadius:"20px",padding:"0.25rem 0.6rem",cursor:"pointer",fontFamily:"'Raleway',sans-serif"}}>Switch User</button>
+        </div>
+      </header>
+
+      {/* PROGRESS */}
+      <div style={{padding:"0.25rem 1.5rem 0.75rem"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"0.4rem"}}>
+          <span style={{fontSize:"0.65rem",letterSpacing:"0.14em",textTransform:"uppercase",color:"#A08060"}}>Daily Progress</span>
+          <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"0.95rem",color:totalDone===totalHabits?"#5C7A51":"#C4871F",fontStyle:totalDone===totalHabits?"italic":"normal"}}>
+            {totalDone}/{totalHabits}{totalDone===totalHabits?" · Full Day 🌿":""}
+          </span>
+        </div>
+        <div style={{height:"6px",background:"#EDE0CD",borderRadius:"3px",overflow:"hidden"}}>
+          <div style={{height:"100%",width:`${pct}%`,borderRadius:"3px",background:pct===100?"linear-gradient(90deg,#5C7A51,#7FAF73)":"linear-gradient(90deg,#C4871F,#E8A840)",transition:"width 0.6s ease,background 0.5s ease"}}/>
+        </div>
+        {/* Category mini bars */}
+        <div style={{display:"flex",gap:"3px",marginTop:"5px"}}>
+          {CATS.map(cat=>{
+            const done=cat.habits.filter(h=>dayData.tasks[h.id]).length;
+            const p=(done/cat.habits.length)*100;
+            return(
+              <div key={cat.id} title={`${cat.label}: ${done}/${cat.habits.length}`}
+                style={{flex:1,height:"3px",background:`${cat.color}22`,borderRadius:"2px",overflow:"hidden"}}>
+                <div style={{height:"100%",width:`${p}%`,background:cat.color,transition:"width 0.4s ease"}}/>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* SCRIPTURE CARD */}
+      <div className="fade" style={{margin:"0 1.5rem 1rem",borderRadius:"16px",overflow:"hidden",boxShadow:"0 8px 30px rgba(28,16,8,0.14)",background:"#fff"}}>
+        <div style={{height:"180px",position:"relative",overflow:"hidden",background:bg}}>
+          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 40% 60%,rgba(255,255,255,0.14) 0%,transparent 65%)"}}/>
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,rgba(255,255,255,0.06) 0%,transparent 50%,rgba(255,255,255,0.03) 100%)"}}/>
+          <div style={{position:"absolute",top:"-55px",left:"-55px",width:"190px",height:"190px",borderRadius:"50%",border:"1px solid rgba(255,255,255,0.07)"}}/>
+          <div style={{position:"absolute",bottom:"-40px",right:"-40px",width:"155px",height:"155px",borderRadius:"50%",border:"1px solid rgba(255,255,255,0.06)"}}/>
+          {/* Focus Word - big centered watermark */}
+          {content?.word&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontSize:"3.8rem",fontWeight:700,color:"rgba(255,255,255,0.08)",userSelect:"none",letterSpacing:"0.05em"}}>{content.word}</div>}
+          <div style={{position:"absolute",bottom:"0.7rem",left:"1rem",right:"1rem",display:"flex",gap:"0.4rem",alignItems:"center"}}>
+            {contentLoading
+              ?<span className="sk" style={{height:"20px",width:"90px"}}/>
+              :content&&(<>
+                <span style={{fontSize:"0.58rem",letterSpacing:"0.1em",textTransform:"uppercase",background:"rgba(255,255,255,0.18)",backdropFilter:"blur(8px)",color:"white",padding:"0.22rem 0.65rem",borderRadius:"20px"}}>{content.theme}</span>
+                <span style={{fontSize:"0.58rem",letterSpacing:"0.1em",textTransform:"uppercase",background:"rgba(0,0,0,0.32)",backdropFilter:"blur(8px)",color:"rgba(255,255,255,0.85)",padding:"0.22rem 0.65rem",borderRadius:"20px"}}>{content.ver}</span>
+                {content.word&&<span style={{marginLeft:"auto",fontSize:"0.6rem",letterSpacing:"0.18em",textTransform:"uppercase",color:"rgba(255,255,255,0.6)",fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic"}}>Today: {content.word}</span>}
+              </>)
+            }
+          </div>
+        </div>
+        <div style={{padding:"1rem 1.25rem 0.9rem"}}>
+          {contentLoading
+            ?(<><div className="sk" style={{height:"1rem",width:"100%",marginBottom:"0.5rem"}}/><div className="sk" style={{height:"1rem",width:"80%",marginBottom:"0.7rem"}}/><div className="sk" style={{height:"0.7rem",width:"26%"}}/></>)
+            :content&&(<><blockquote style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"1.12rem",fontStyle:"italic",lineHeight:1.65,color:"#1C1008",marginBottom:"0.65rem"}}>"{content.text}"</blockquote><div style={{fontSize:"0.68rem",letterSpacing:"0.14em",textTransform:"uppercase",color:"#C4871F",fontWeight:600}}>{content.ref}</div></>)
+          }
+        </div>
+      </div>
+
+      {/* TABS */}
+      <div style={{display:"flex",margin:"0 1.5rem 0.9rem",background:"rgba(255,255,255,0.5)",borderRadius:"10px",padding:"3px",border:"1px solid #EDE0CD"}}>
+        {[["today","Today"],["journal","Journal"],["prayer","Prayer"],["journey","Journey"],["history","History"]].map(([id,label])=>(
+          <button key={id} onClick={()=>setActiveTab(id)}
+            style={{flex:1,padding:"0.45rem 0.1rem",borderRadius:"8px",fontSize:"0.58rem",letterSpacing:"0.08em",textTransform:"uppercase",fontFamily:"'Raleway',sans-serif",fontWeight:activeTab===id?600:400,background:activeTab===id?"#C4871F":"transparent",color:activeTab===id?"white":"#A08060",border:"none",cursor:"pointer",transition:"all 0.2s"}}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── TODAY ── */}
+      {activeTab==="today"&&(
+        <div className="fade">
+          {CATS.map(cat=>{
+            const catDone=cat.habits.filter(h=>dayData.tasks[h.id]).length;
+            const isOpen=openCats[cat.id];
+            return(
+              <div key={cat.id} style={{margin:"0 1.5rem 0.75rem",borderRadius:"12px",border:`1px solid ${cat.color}22`,overflow:"hidden",background:cat.bg}}>
+                {/* Category header */}
+                <div onClick={()=>setOpenCats(p=>({...p,[cat.id]:!p[cat.id]}))}
+                  style={{padding:"0.75rem 1rem",display:"flex",alignItems:"center",gap:"0.6rem",cursor:"pointer",background:isOpen?`${cat.color}10`:"transparent",transition:"background 0.2s"}}>
+                  <span style={{fontSize:"1rem",color:cat.color}}>{cat.icon}</span>
+                  <div style={{flex:1}}>
+                    <div style={{fontFamily:"'Raleway',sans-serif",fontSize:"0.82rem",fontWeight:600,color:"#1C1008"}}>{cat.label}</div>
+                    <div style={{fontSize:"0.58rem",letterSpacing:"0.1em",textTransform:"uppercase",color:cat.color,marginTop:"0.1rem",opacity:0.8}}>{cat.verse}</div>
+                  </div>
+                  <div style={{display:"flex",alignItems:"center",gap:"0.6rem"}}>
+                    <div style={{display:"flex",gap:"2px"}}>
+                      {cat.habits.map(h=>(
+                        <div key={h.id} style={{width:"6px",height:"6px",borderRadius:"50%",background:dayData.tasks[h.id]?cat.color:`${cat.color}30`,transition:"background 0.2s"}}/>
+                      ))}
+                    </div>
+                    <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"0.85rem",color:cat.color,fontWeight:600,minWidth:"28px",textAlign:"right"}}>{catDone}/{cat.habits.length}</span>
+                    <span style={{color:cat.color,fontSize:"0.7rem",opacity:0.7}}>{isOpen?"▲":"▼"}</span>
+                  </div>
+                </div>
+                {/* Habits */}
+                {isOpen&&(
+                  <div style={{padding:"0 0.75rem 0.75rem"}}>
+                    {cat.habits.map(h=>(
+                      <div key={h.id} className="habit-row" onClick={()=>toggleTask(h.id)}
+                        style={{display:"flex",alignItems:"center",gap:"0.65rem",padding:"0.6rem 0.5rem",marginBottom:"0.3rem",borderRadius:"8px",background:dayData.tasks[h.id]?"rgba(255,255,255,0.7)":"rgba(255,255,255,0.45)",border:`1px solid ${dayData.tasks[h.id]?cat.color+"40":"#EDE0CD"}`,cursor:"pointer",transition:"all 0.2s"}}>
+                        <div style={{width:"20px",height:"20px",borderRadius:"50%",border:`2px solid ${dayData.tasks[h.id]?cat.color:"#C4A882"}`,background:dayData.tasks[h.id]?cat.color:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"all 0.22s"}}>
+                          {dayData.tasks[h.id]&&<span style={{color:"white",fontSize:"0.75rem",lineHeight:1,fontWeight:700}}>✓</span>}
+                        </div>
+                        <div style={{flex:1}}>
+                          <div style={{fontSize:"0.83rem",fontWeight:500,color:dayData.tasks[h.id]?cat.color:"#1C1008",textDecoration:dayData.tasks[h.id]?"line-through":"none",opacity:dayData.tasks[h.id]?0.65:1,transition:"all 0.2s"}}>
+                            <span style={{marginRight:"0.35rem"}}>{h.icon}</span>{h.label}
+                          </div>
+                          <div style={{fontSize:"0.63rem",color:"#A08060",marginTop:"0.1rem"}}>{h.desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                    {/* Water tracker for body */}
+                    {cat.id==="body"&&(
+                      <div style={{padding:"0.6rem 0.5rem",background:"rgba(255,255,255,0.45)",borderRadius:"8px",border:"1px solid #EDE0CD"}}>
+                        <WaterTracker count={dayData.water||0} onChange={v=>update({water:v})}/>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Quote */}
+          {content&&(
+            <div style={{margin:"0 1.5rem 1rem",padding:"1.25rem",background:"linear-gradient(135deg,rgba(196,135,31,0.07),rgba(196,135,31,0.02))",borderRadius:"12px",border:"1px solid rgba(196,135,31,0.16)",textAlign:"center"}}>
+              <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"2.5rem",color:"#C4871F",opacity:0.3,lineHeight:0.7,marginBottom:"0.75rem"}}>❝</div>
+              <blockquote style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"1.08rem",fontStyle:"italic",lineHeight:1.65,color:"#1C1008",marginBottom:"0.65rem"}}>{content.quote}</blockquote>
+              <cite style={{fontSize:"0.62rem",letterSpacing:"0.14em",textTransform:"uppercase",color:"#C4871F",fontWeight:600,fontStyle:"normal"}}>— {content.author}</cite>
+            </div>
+          )}
+
+          {/* Complete Button */}
+          <div style={{padding:"0 1.5rem 0.5rem"}}>
+            <button onClick={completeDayFn} disabled={done}
+              style={{width:"100%",padding:"1rem",borderRadius:"12px",border:"none",cursor:done?"default":"pointer",color:"white",fontSize:"0.82rem",fontFamily:"'Raleway',sans-serif",fontWeight:600,letterSpacing:"0.1em",textTransform:"uppercase",background:done?"linear-gradient(135deg,#5C7A51,#7FAF73)":"linear-gradient(135deg,#C4871F,#E8A840)",boxShadow:done?"0 4px 14px rgba(92,122,81,0.3)":"0 4px 20px rgba(196,135,31,0.35)",transition:"all 0.4s ease"}}>
+              {done?"🌿  Day Complete — Well done!":"✓  Mark Day Complete"}
+            </button>
+          </div>
+
+          {/* Suggestions banner */}
+          <div style={{margin:"0.5rem 1.5rem 0",padding:"0.85rem 1rem",background:"rgba(255,255,255,0.5)",borderRadius:"10px",border:"1px solid #EDE0CD"}}>
+            <div style={{fontSize:"0.6rem",letterSpacing:"0.12em",textTransform:"uppercase",color:"#C4871F",marginBottom:"0.4rem",fontWeight:600}}>💡 Also Consider Tracking</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:"0.35rem"}}>
+              {["🍽️ Fasting","⛪ Church","🤝 Volunteering","📞 Called a friend","🌿 Time in nature","💰 Budgeted wisely","😴 Nap / rest"].map(s=>(
+                <span key={s} style={{fontSize:"0.68rem",color:"#A08060",background:"rgba(196,135,31,0.07)",border:"1px solid rgba(196,135,31,0.15)",borderRadius:"20px",padding:"0.2rem 0.55rem",fontFamily:"'Raleway',sans-serif"}}>{s}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── JOURNAL ── */}
+      {activeTab==="journal"&&(
+        <div className="fade">
+          <section style={S.card}>
+            <h2 style={S.title}>Three Thanksgivings</h2>
+            <p style={S.sub}>Enter His gates with thanksgiving — Psalm 100:4</p>
+            {[0,1,2].map(i=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:"0.75rem",marginBottom:"0.6rem"}}>
+                <span style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"1.1rem",color:"#C4871F",fontWeight:600,width:"1.2rem",flexShrink:0}}>{i+1}</span>
+                <input value={dayData.gratitude[i]||""} onChange={e=>{const g=[...dayData.gratitude];g[i]=e.target.value;update({gratitude:g});}}
+                  placeholder={["I am grateful for...","Today I thank God for...","A blessing I see..."][i]}
+                  style={{flex:1,padding:"0.5rem 0.75rem",border:"1px solid #EDE0CD",borderRadius:"6px",fontSize:"0.85rem",background:"rgba(255,255,255,0.8)",color:"#1C1008",fontFamily:"'Raleway',sans-serif"}}/>
+              </div>
+            ))}
+          </section>
+          <section style={S.card}>
+            <h2 style={S.title}>Scripture Meditation</h2>
+            <p style={S.sub}>Write today's scripture in your own words — what is the Spirit highlighting?</p>
+            <textarea value={dayData.meditation||""} onChange={e=>update({meditation:e.target.value})}
+              placeholder={content?`Reflect on ${content.ref}... What phrase stood out? What is He saying through it today?`:"What is the Holy Spirit saying through today's verse?"}
+              rows={5} style={{width:"100%",padding:"0.8rem",border:"1px solid #EDE0CD",borderRadius:"8px",fontSize:"1.05rem",lineHeight:1.7,fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",background:"rgba(255,255,255,0.8)",color:"#1C1008",resize:"none"}}/>
+          </section>
+          <section style={S.card}>
+            <h2 style={S.title}>Revelations & Notes</h2>
+            <p style={S.sub}>What is God speaking to you today?</p>
+            <textarea value={dayData.notes||""} onChange={e=>update({notes:e.target.value})}
+              placeholder="Write anything the Lord is speaking... a word, a picture, an impression, a conviction, something you sense from the Holy Spirit throughout the day..."
+              rows={7} style={{width:"100%",padding:"0.8rem",border:"1px solid #EDE0CD",borderRadius:"8px",fontSize:"0.88rem",lineHeight:1.8,fontFamily:"'Raleway',sans-serif",background:"rgba(255,255,255,0.8)",color:"#1C1008",resize:"none"}}/>
+          </section>
+          <section style={S.card}>
+            <h2 style={S.title}>Memory Verse</h2>
+            <p style={S.sub}>One verse to carry with you this week — saved across days</p>
+            <textarea value={memVerse} onChange={e=>{setMemVerse(e.target.value);safeSet(K("dev:memverse"),e.target.value);}}
+              placeholder="Write a verse you are hiding in your heart this week..."
+              rows={3} style={{width:"100%",padding:"0.8rem",border:"1px solid #EDE0CD",borderRadius:"8px",fontSize:"1rem",lineHeight:1.65,fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",background:"rgba(255,255,255,0.8)",color:"#1C1008",resize:"none"}}/>
+          </section>
+        </div>
+      )}
+
+      {/* ── PRAYER ── */}
+      {activeTab==="prayer"&&(
+        <div className="fade">
+          <section style={S.card}>
+            <h2 style={S.title}>Prayer Intentions</h2>
+            <p style={S.sub}>Bring them before the throne of grace — Hebrews 4:16</p>
+            {dayData.prayers.length>0?(
+              <div style={{marginBottom:"0.8rem"}}>
+                {dayData.prayers.map((p,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:"0.6rem",padding:"0.6rem 0.75rem",marginBottom:"0.35rem",borderRadius:"8px",background:p.done?"rgba(92,122,81,0.07)":"rgba(255,255,255,0.65)",border:"1px solid #EDE0CD",transition:"all 0.2s"}}>
+                    <div onClick={()=>{const prayers=dayData.prayers.map((x,j)=>j===i?{...x,done:!x.done}:x);update({prayers});}}
+                      style={{width:"20px",height:"20px",borderRadius:"50%",border:`2px solid ${p.done?"#5C7A51":"#C4A882"}`,background:p.done?"#5C7A51":"transparent",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,transition:"all 0.2s"}}>
+                      {p.done&&<span style={{color:"white",fontSize:"0.72rem",fontWeight:700}}>✓</span>}
+                    </div>
+                    <span style={{flex:1,fontSize:"0.85rem",color:"#1C1008",textDecoration:p.done?"line-through":"none",opacity:p.done?0.5:1,fontFamily:"'Raleway',sans-serif"}}>{p.text}</span>
+                    <button onClick={()=>{const prayers=dayData.prayers.filter((_,j)=>j!==i);update({prayers});}} style={{background:"none",border:"none",color:"#C4A882",fontSize:"1.1rem",cursor:"pointer",lineHeight:1,padding:"0 0.1rem"}}>×</button>
+                  </div>
+                ))}
+              </div>
+            ):(
+              <div style={{padding:"1.2rem",textAlign:"center",color:"#C4A882",fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontSize:"0.95rem",marginBottom:"0.5rem"}}>Your intercessions will appear here 🙏</div>
+            )}
+            <div style={{display:"flex",gap:"0.5rem",marginBottom:"1rem"}}>
+              <input value={newPrayer} onChange={e=>setNewPrayer(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")addPrayer();}}
+                placeholder="Add a prayer intention... (press Enter)"
+                style={{flex:1,padding:"0.55rem 0.75rem",border:"1px solid #EDE0CD",borderRadius:"8px",fontSize:"0.85rem",background:"rgba(255,255,255,0.8)",color:"#1C1008",fontFamily:"'Raleway',sans-serif"}}/>
+              <button onClick={addPrayer} style={{background:"linear-gradient(135deg,#C4871F,#E8A840)",color:"white",border:"none",borderRadius:"8px",width:"38px",fontSize:"1.4rem",cursor:"pointer",fontWeight:300,lineHeight:1,boxShadow:"0 2px 10px rgba(196,135,31,0.3)"}}>+</button>
+            </div>
+            <div style={{padding:"0.9rem",background:"rgba(196,135,31,0.05)",borderRadius:"8px",border:"1px solid rgba(196,135,31,0.15)"}}>
+              <div style={{fontSize:"0.6rem",letterSpacing:"0.14em",textTransform:"uppercase",color:"#C4871F",marginBottom:"0.5rem",fontWeight:600}}>Quick Categories</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:"0.4rem"}}>
+                {["Praise ✦","Thanksgiving 🌿","Family 🏠","Church 🕊️","Healing ❤️","Missions 🌍","Personal 🙏","Salvation 🔥","Marriage ❤️","Finance 💛"].map(cat=>(
+                  <button key={cat} onClick={()=>setNewPrayer(cat.split(" ")[0]+": ")}
+                    style={{padding:"0.3rem 0.65rem",background:"rgba(196,135,31,0.1)",border:"1px solid rgba(196,135,31,0.2)",borderRadius:"20px",fontSize:"0.68rem",color:"#8B6914",cursor:"pointer",fontFamily:"'Raleway',sans-serif"}}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {/* ── JOURNEY ── */}
+      {activeTab==="journey"&&(
+        <div className="fade">
+          <section style={S.card}>
+            <h2 style={S.title}>Your Faithfulness</h2>
+            <p style={S.sub}>Last 28 days — every dot is a day walked with Him</p>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:"3px",marginBottom:"4px"}}>
+              {SHORT_DAYS.map(d=><div key={d} style={{textAlign:"center",fontSize:"0.52rem",letterSpacing:"0.08em",color:"#A08060",paddingBottom:"4px",textTransform:"uppercase"}}>{d}</div>)}
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:"6px",marginBottom:"0.8rem"}}>
+              {last28.map(d=>(
+                <div key={d} title={d} style={{aspectRatio:"1",borderRadius:"50%",background:completedDays.includes(d)?(d===TODAY?"#C4871F":"#5C7A51"):(d===TODAY?"#F0D4A0":"#EDE0CD"),border:d===TODAY?"2px solid #C4871F":"none",transform:d===TODAY?"scale(1.2)":"scale(1)",transition:"all 0.3s ease",boxShadow:completedDays.includes(d)&&d!==TODAY?"0 1px 4px rgba(92,122,81,0.25)":"none"}}/>
+              ))}
+            </div>
+            <div style={{display:"flex",gap:"1.2rem",justifyContent:"center",fontSize:"0.62rem",color:"#A08060"}}>
+              {[["#5C7A51","Completed"],["#C4871F","Today"],["#EDE0CD","Not yet"]].map(([bg2,label])=>(
+                <span key={label} style={{display:"flex",alignItems:"center",gap:"5px"}}>
+                  <span style={{width:"9px",height:"9px",borderRadius:"50%",background:bg2,display:"inline-block"}}/>{label}
+                </span>
+              ))}
+            </div>
+          </section>
+          <section style={S.card}>
+            <h2 style={S.title}>Stats</h2>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"0.75rem",marginTop:"0.5rem"}}>
+              {[{label:"Current Streak",val:`${streak} 🔥`,color:"#C4871F"},{label:"This Month",val:`${completedDays.filter(d=>d.startsWith(TODAY.slice(0,7))).length}`,color:"#5C7A51"},{label:"Total Days",val:`${completedDays.length}`,color:"#4568dc"}].map(stat=>(
+                <div key={stat.label} style={{textAlign:"center",padding:"0.8rem 0.5rem",background:"rgba(255,255,255,0.65)",borderRadius:"10px",border:"1px solid #EDE0CD"}}>
+                  <div style={{fontFamily:"'Cormorant Garamond',serif",fontSize:"1.7rem",fontWeight:600,color:stat.color,lineHeight:1}}>{stat.val}</div>
+                  <div style={{fontSize:"0.58rem",letterSpacing:"0.1em",textTransform:"uppercase",color:"#A08060",marginTop:"0.3rem",lineHeight:1.3}}>{stat.label}</div>
+                </div>
+              ))}
+            </div>
+            {streak>=7&&(
+              <div style={{marginTop:"0.85rem",padding:"0.75rem",background:"rgba(196,135,31,0.07)",borderRadius:"8px",border:"1px solid rgba(196,135,31,0.18)",textAlign:"center"}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontSize:"0.9rem",color:"#8B6914"}}>
+                  {streak>=30?"🏆 A month of faithful living — He is so pleased with you!":streak>=14?"⭐ Two weeks strong — keep walking!":"🌟 One week of faithfulness — beautiful!"}
+                </div>
+              </div>
+            )}
+            {/* Category breakdown */}
+            <div style={{marginTop:"0.85rem"}}>
+              <div style={{fontSize:"0.6rem",letterSpacing:"0.12em",textTransform:"uppercase",color:"#A08060",marginBottom:"0.5rem"}}>Today's Category Breakdown</div>
+              {CATS.map(cat=>{
+                const done=cat.habits.filter(h=>dayData.tasks[h.id]).length;
+                const p=(done/cat.habits.length)*100;
+                return(
+                  <div key={cat.id} style={{display:"flex",alignItems:"center",gap:"0.5rem",marginBottom:"0.4rem"}}>
+                    <span style={{fontSize:"0.85rem",width:"1.2rem"}}>{cat.icon}</span>
+                    <span style={{fontSize:"0.72rem",color:"#1C1008",width:"90px",fontFamily:"'Raleway',sans-serif",fontWeight:500}}>{cat.label}</span>
+                    <div style={{flex:1,height:"5px",background:`${cat.color}20`,borderRadius:"3px",overflow:"hidden"}}>
+                      <div style={{height:"100%",width:`${p}%`,background:cat.color,transition:"width 0.5s ease"}}/>
+                    </div>
+                    <span style={{fontSize:"0.68rem",color:cat.color,fontWeight:600,width:"26px",textAlign:"right"}}>{done}/{cat.habits.length}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+      )}
+
+      {/* ── HISTORY ── */}
+      {activeTab==="history"&&(
+        <div className="fade">
+          <section style={S.card}>
+            <h2 style={S.title}>Past Days</h2>
+            <p style={S.sub}>A record of your walk with Him — tap any day to expand</p>
+            {!histLoaded?(
+              <div style={{textAlign:"center",padding:"2rem",color:"#A08060",fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic"}}>Loading your history...</div>
+            ):histEntries.length===0?(
+              <div style={{textAlign:"center",padding:"2rem 1rem"}}>
+                <div style={{fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontSize:"1.05rem",color:"#A08060",marginBottom:"0.5rem"}}>No entries yet</div>
+                <div style={{fontSize:"0.75rem",color:"#C4A882",lineHeight:1.6}}>As you check habits and write in your Journal each day, those days will be saved here. Every day you track is a stone of remembrance.</div>
+              </div>
+            ):(
+              histEntries.map((entry,i)=>(
+                <HistoryEntry key={entry.date} date={entry.date} data={entry.data} scripture={entry.scripture}
+                  bg={getBG(getDOYForDate(entry.date))}
+                  expanded={expanded===i} onToggle={()=>setExpanded(expanded===i?null:i)}/>
+              ))
+            )}
+          </section>
+        </div>
+      )}
+
+      <div style={{textAlign:"center",padding:"1.5rem 1.5rem 1rem",marginTop:"0.5rem"}}>
+        <div style={{fontFamily:"'Cormorant Garamond',serif",fontStyle:"italic",fontSize:"0.9rem",color:"#A08060"}}>"Whatever you do, do it heartily, as to the Lord"</div>
+        <div style={{fontSize:"0.58rem",letterSpacing:"0.18em",textTransform:"uppercase",color:"#C4A882",marginTop:"0.3rem"}}>Colossians 3:23</div>
+      </div>
+    </div>
+  );
+}
+
+const S={
+  card:{margin:"0 1.5rem 1.1rem",padding:"1.2rem",background:"rgba(255,255,255,0.65)",borderRadius:"14px",border:"1px solid #EDE0CD"},
+  title:{fontFamily:"'Cormorant Garamond',serif",fontSize:"1.2rem",fontWeight:600,color:"#1C1008",marginBottom:"0.2rem"},
+  sub:{fontFamily:"'Raleway',sans-serif",fontSize:"0.67rem",letterSpacing:"0.06em",color:"#A08060",marginBottom:"0.9rem",fontStyle:"italic"},
+};
+
+export default function App(){
+  const [profile,setProfile]=useState(null);
+  const [profileLoaded,setProfileLoaded]=useState(false);
+
+  useEffect(()=>{
+    (async()=>{
+      const saved=await safeGet("dev:lastProfile");
+      if(saved?.value)setProfile(saved.value);
+      setProfileLoaded(true);
+    })();
+  },[]);
+
+  const selectProfile=async(name)=>{
+    await safeSet("dev:lastProfile",name);
+    setProfile(name);
+  };
+
+  const switchProfile=async()=>{
+    await safeSet("dev:lastProfile","");
+    setProfile(null);
+  };
+
+  if(!profileLoaded)return(
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:"#FAF0E4",fontFamily:"Georgia,serif",color:"#A08060",flexDirection:"column",gap:"1rem"}}>
+      <div style={{fontSize:"2rem",animation:"spin 3s linear infinite"}}>✦</div>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  );
+
+  if(!profile)return <ProfilePicker onSelect={selectProfile}/>;
+  return <DailyTracker key={profile} profile={profile} onSwitch={switchProfile}/>;
+}
